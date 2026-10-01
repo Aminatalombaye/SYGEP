@@ -218,7 +218,7 @@ class ProjectController extends Controller
             'start_date'  => [Rule::requiredIf(fn () => in_array($request->input('status'), ['en_cours', 'suspendu', 'termine'], true)), 'nullable', 'date'],
             'end_date'    => ['nullable', 'date', 'after_or_equal:start_date'],
             'budget'      => ['nullable', 'numeric', 'min:0'],
-            'spent'       => ['nullable', 'numeric', 'min:0'],
+            'spent'       => ['nullable', 'numeric', 'min:0', fn ($attr, $value, $fail) => $request->filled('budget') && (float) $value > (float) $request->input('budget') ? $fail('Le montant engagé dépasse le budget prévu : relevez le budget ou corrigez le montant.') : null],
             'progress'    => ['nullable', 'integer', 'min:0', 'max:100'],
             'infrastructures'   => ['nullable', 'array'],
             'infrastructures.*' => ['integer', 'exists:infrastructures,id'],

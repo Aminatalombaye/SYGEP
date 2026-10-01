@@ -52,6 +52,7 @@
     <label for="spent">Montant engagé / décaissé (FCFA)</label>
     <input class="form-control {{ $errors->has('spent') ? 'is-invalid' : '' }}" type="number" min="0" step="1" name="spent" id="spent" value="{{ old('spent', $project->spent !== null ? (int) $project->spent : null) }}">
     @error('spent')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    <div class="hint" id="spent-alert" style="color: var(--sy-critical, #c0392b)" hidden>Attention : le montant engagé dépasse le budget prévu.</div>
 </div>
 
 <div class="form-group">
@@ -87,3 +88,16 @@
     <label for="description">Description / objectifs</label>
     <textarea class="form-control" name="description" id="description" rows="4">{{ old('description', $project->description) }}</textarea>
 </div>
+
+<script>
+    (function () {
+        var budget = document.getElementById('budget'), spent = document.getElementById('spent'), alertEl = document.getElementById('spent-alert');
+        if (!budget || !spent || !alertEl) return;
+        function check() {
+            alertEl.hidden = !(budget.value !== '' && spent.value !== '' && parseFloat(spent.value) > parseFloat(budget.value));
+        }
+        budget.addEventListener('input', check);
+        spent.addEventListener('input', check);
+        check();
+    })();
+</script>
