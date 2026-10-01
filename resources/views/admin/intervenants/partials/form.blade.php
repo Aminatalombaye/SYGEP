@@ -9,7 +9,9 @@
 
 <div class="form-group">
     <label for="organisation">Entreprise / organisme</label>
-    <input class="form-control" type="text" name="organisation" id="organisation" value="{{ old('organisation', $intervenant->organisation) }}" placeholder="Ex. : CSE, Bureau Veritas…">
+    <input class="form-control {{ $errors->has('organisation') ? 'is-invalid' : '' }}" type="text" name="organisation" id="organisation" value="{{ old('organisation', $intervenant->organisation) }}" placeholder="Ex. : CSE, Bureau Veritas…">
+    @error('organisation')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    <span class="hint">Obligatoire sauf pour un technicien / artisan indépendant ou un type « Autre ».</span>
 </div>
 
 <div class="form-group">
@@ -25,7 +27,9 @@
 
 <div class="form-group">
     <label for="telephone">Téléphone</label>
-    <input class="form-control" type="text" name="telephone" id="telephone" value="{{ old('telephone', $intervenant->telephone) }}">
+    <input class="form-control {{ $errors->has('telephone') ? 'is-invalid' : '' }}" type="text" name="telephone" id="telephone" value="{{ old('telephone', $intervenant->telephone) }}">
+    @error('telephone')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    <span class="hint">Téléphone ou e-mail : au moins l'un des deux.</span>
 </div>
 
 <div class="form-group">

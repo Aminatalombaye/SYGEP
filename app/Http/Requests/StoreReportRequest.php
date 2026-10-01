@@ -27,6 +27,7 @@ class StoreReportRequest extends FormRequest
             'report_date' => [
                 'required',
                 'date_format:' . config('panel.date_format'),
+                'before_or_equal:' . now()->format(config('panel.date_format')),
             ],
             'projects.*' => [
                 'integer',
