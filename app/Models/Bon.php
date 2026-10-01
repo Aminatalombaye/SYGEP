@@ -42,6 +42,11 @@ class Bon extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
+    public function assets()
+    {
+        return $this->belongsToMany(Asset::class);
+    }
+
     public function getDateEmissionAttribute($value)
     {
         return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;

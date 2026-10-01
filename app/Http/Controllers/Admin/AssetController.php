@@ -58,8 +58,8 @@ class AssetController extends Controller
     public function store(StoreAssetRequest $request)
     {
         $asset = Asset::create($request->except(['agent_id', 'service_id', 'qr_code', 'assigned_to']));
-        $asset->fournisseurs()->sync($request->input('fournisseurs', []));
-        $asset->bons()->sync($request->input('bons', []));
+        $asset->fournisseurs()->sync(array_filter((array) $request->input('fournisseurs', [])));
+        $asset->bons()->sync(array_filter((array) $request->input('bons', [])));
         foreach ($request->input('photos', []) as $file) {
             $asset->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('photos');
         }
@@ -93,8 +93,8 @@ class AssetController extends Controller
     public function update(UpdateAssetRequest $request, Asset $asset)
     {
         $asset->update($request->except(['agent_id', 'service_id', 'qr_code', 'assigned_to']));
-        $asset->fournisseurs()->sync($request->input('fournisseurs', []));
-        $asset->bons()->sync($request->input('bons', []));
+        $asset->fournisseurs()->sync(array_filter((array) $request->input('fournisseurs', [])));
+        $asset->bons()->sync(array_filter((array) $request->input('bons', [])));
         if (count($asset->photos) > 0) {
             foreach ($asset->photos as $media) {
                 if (! in_array($media->file_name, $request->input('photos', []))) {

@@ -69,6 +69,27 @@
                     </tr>
                 </tbody>
             </table>
+
+            <h5 style="margin-top: 24px">Matières reçues avec ce bon ({{ $bon->assets->count() }})</h5>
+            @if($bon->assets->isEmpty())
+                <p class="muted">Aucune matière n'est encore rattachée à ce bon.</p>
+            @else
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr><th>Code</th><th>Nom</th><th>Catégorie</th><th>État</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach($bon->assets as $asset)
+                            <tr>
+                                <td>{{ $asset->qr_code }}</td>
+                                <td>@can('asset_show')<a href="{{ route('admin.assets.show', $asset->id) }}">{{ $asset->name }}</a>@else{{ $asset->name }}@endcan</td>
+                                <td>{{ $asset->category->name ?? '' }}</td>
+                                <td>@if($asset->status)<span class="pill pill-{{ $asset->status->tone }}">{{ $asset->status->label }}</span>@endif</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
     </div>
 </div>

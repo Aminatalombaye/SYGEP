@@ -17,7 +17,7 @@ class BonController extends Controller
     {
         abort_if(Gate::denies('bon_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $bons = Bon::all();
+        $bons = Bon::withCount('assets')->get();
 
         return view('admin.bons.index', compact('bons'));
     }
@@ -53,6 +53,8 @@ class BonController extends Controller
     public function show(Bon $bon)
     {
         abort_if(Gate::denies('bon_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $bon->load('assets.status', 'assets.category');
 
         return view('admin.bons.show', compact('bon'));
     }

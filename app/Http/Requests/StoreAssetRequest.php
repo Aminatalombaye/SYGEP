@@ -64,20 +64,20 @@ class StoreAssetRequest extends FormRequest
                 'nullable',
             ],
             'fournisseurs.*' => [
-                'required',
+                'nullable',
                 'integer',
             ],
             'fournisseurs' => [
-                'required',
+                'nullable',
                 'array',
                 'max:1',
             ],
             'bons.*' => [
-                'required',
+                'nullable',
                 'integer',
             ],
             'bons' => [
-                'required',
+                'nullable',
                 'array',
                 'max:1',
             ],
