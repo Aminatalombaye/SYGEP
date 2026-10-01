@@ -60,8 +60,9 @@
 </div>
 
 <div class="form-group full-row">
-    <label for="description">Description du problème</label>
-    <textarea class="form-control" name="description" id="description" rows="4" placeholder="Constat, localisation précise, depuis quand…">{{ old('description', $maintenanceRequest->description) }}</textarea>
+    <label class="required" for="description">Description du problème</label>
+    <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description" rows="4" required placeholder="Constat, localisation précise, depuis quand…">{{ old('description', $maintenanceRequest->description) }}</textarea>
+    @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 
 @push('form-js')
