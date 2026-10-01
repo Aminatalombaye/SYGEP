@@ -31,7 +31,9 @@
 
 <div class="form-group">
     <label for="start_date">Date de démarrage</label>
-    <input class="form-control" type="date" name="start_date" id="start_date" value="{{ old('start_date', $project->start_date?->toDateString()) }}">
+    <input class="form-control {{ $errors->has('start_date') ? 'is-invalid' : '' }}" type="date" name="start_date" id="start_date" value="{{ old('start_date', $project->start_date?->toDateString()) }}">
+    @error('start_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    <span class="hint">Obligatoire dès que le projet est en cours, suspendu ou terminé.</span>
 </div>
 
 <div class="form-group">
