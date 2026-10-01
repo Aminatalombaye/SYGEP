@@ -522,6 +522,10 @@ a.kpi[href]:hover { border-color: #c9d7e6; box-shadow: 0 10px 24px -16px rgba(26
 .btn-icon:hover { background: var(--sy-tint) !important; color: var(--sy-navy) !important; border-color: #c9d7e6 !important; }
 .btn-icon-danger:hover { background: var(--sy-critical-bg) !important; color: var(--sy-critical) !important; border-color: #f6c7c8 !important; }
 td form { margin: 0; }
+/* Colonne d'actions : boutons-icônes alignés sur une seule ligne, dans tous les tableaux. */
+table td:has(> .btn-icon), table td:has(> form > .btn-icon) { white-space: nowrap; width: 1%; }
+table td:has(> .btn-icon) form, table td:has(> form > .btn-icon) form { display: inline-flex !important; vertical-align: middle; margin: 0; }
+table td .btn-icon { vertical-align: middle; }
 
 /* Barre d'outils des tableaux */
 .dt-toolbar {

@@ -87,11 +87,11 @@
                             </td>
                             <td class="nowrap">
                                 @can('assignment_show')
-                                    <a class="btn btn-xs btn-default" href="{{ route('admin.assignments.show', $assignment) }}">Voir</a>
+                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.assignments.show', $assignment) }}" title="Voir" aria-label="Voir"><i class="bi bi-eye"></i></a>
                                 @endcan
                                 @if($assignment->isOpen())
                                     @can('assignment_return')
-                                        <a class="btn btn-xs btn-primary" href="{{ route('admin.assignments.return', $assignment) }}">Restituer</a>
+                                        <a class="btn btn-xs btn-icon" href="{{ route('admin.assignments.return', $assignment) }}" title="Restituer" aria-label="Restituer"><i class="bi bi-box-arrow-in-left"></i></a>
                                     @endcan
                                 @endif
                             </td>
