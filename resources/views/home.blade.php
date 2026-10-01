@@ -66,48 +66,6 @@
         @endforeach
     </div>
 
-    <div class="panel-grid">
-        <section class="panel panel-wide">
-            <header class="panel-head">
-                <div>
-                    <h2>Nouvelles matières</h2>
-                    <p>Enregistrements par mois, sur les 12 derniers mois</p>
-                </div>
-            </header>
-            <div class="chart-box chart-tall"><canvas id="chart-monthly" aria-label="Nouvelles matières par mois" role="img"></canvas></div>
-        </section>
-
-        <section class="panel">
-            <header class="panel-head">
-                <div>
-                    <h2>Matières par statut</h2>
-                    <p>Répartition actuelle du parc</p>
-                </div>
-            </header>
-            <div class="chart-box"><canvas id="chart-status" aria-label="Matières par statut" role="img"></canvas></div>
-        </section>
-
-        <section class="panel">
-            <header class="panel-head">
-                <div>
-                    <h2>Matières par catégorie</h2>
-                    <p>Catégories les plus représentées</p>
-                </div>
-            </header>
-            <div class="chart-box"><canvas id="chart-category" aria-label="Matières par catégorie" role="img"></canvas></div>
-        </section>
-
-        <section class="panel">
-            <header class="panel-head">
-                <div>
-                    <h2>Tâches par statut</h2>
-                    <p>Suivi des interventions</p>
-                </div>
-            </header>
-            <div class="chart-box"><canvas id="chart-tasks" aria-label="Tâches par statut" role="img"></canvas></div>
-        </section>
-    </div>
-
     <div class="panel-grid panel-grid-2">
         <section class="panel panel-wide">
             <header class="panel-head">
@@ -191,6 +149,48 @@
                     <li class="empty"><i class="bi bi-inbox" aria-hidden="true"></i> Aucune demande.</li>
                 @endforelse
             </ul>
+        </section>
+    </div>
+
+    <div class="panel-grid">
+        <section class="panel panel-wide">
+            <header class="panel-head">
+                <div>
+                    <h2>Nouvelles matières</h2>
+                    <p>Enregistrements par mois, sur les 12 derniers mois</p>
+                </div>
+            </header>
+            <div class="chart-box chart-tall"><canvas id="chart-monthly" aria-label="Nouvelles matières par mois" role="img"></canvas></div>
+        </section>
+
+        <section class="panel">
+            <header class="panel-head">
+                <div>
+                    <h2>Matières par statut</h2>
+                    <p>Répartition actuelle du parc</p>
+                </div>
+            </header>
+            <div class="chart-box"><canvas id="chart-status" aria-label="Matières par statut" role="img"></canvas></div>
+        </section>
+
+        <section class="panel">
+            <header class="panel-head">
+                <div>
+                    <h2>Matières par catégorie</h2>
+                    <p>Catégories les plus représentées</p>
+                </div>
+            </header>
+            <div class="chart-box"><canvas id="chart-category" aria-label="Matières par catégorie" role="img"></canvas></div>
+        </section>
+
+        <section class="panel">
+            <header class="panel-head">
+                <div>
+                    <h2>Tâches par statut</h2>
+                    <p>Suivi des interventions</p>
+                </div>
+            </header>
+            <div class="chart-box"><canvas id="chart-tasks" aria-label="Tâches par statut" role="img"></canvas></div>
         </section>
     </div>
 </div>
