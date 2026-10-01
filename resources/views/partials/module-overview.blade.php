@@ -59,25 +59,41 @@
     @endif
 
     @if(!empty($overview['charts']))
-        <div class="panel-grid overview-charts">
-            @foreach($overview['charts'] as $chart)
-                <section class="panel {{ $chart['wide'] ? 'panel-wide' : '' }}">
-                    <header class="panel-head">
-                        <div>
-                            <h2>{{ $chart['title'] }}</h2>
-                            @if($chart['subtitle'])<p>{{ $chart['subtitle'] }}</p>@endif
+        <details class="overview-toggle" id="ov-toggle">
+            <summary><i class="bi bi-bar-chart-line" aria-hidden="true"></i> Graphiques <span class="muted">({{ count($overview['charts']) }})</span></summary>
+            <div class="panel-grid overview-charts">
+                @foreach($overview['charts'] as $chart)
+                    <section class="panel {{ $chart['wide'] ? 'panel-wide' : '' }}">
+                        <header class="panel-head">
+                            <div>
+                                <h2>{{ $chart['title'] }}</h2>
+                                @if($chart['subtitle'])<p>{{ $chart['subtitle'] }}</p>@endif
+                            </div>
+                        </header>
+                        <div class="chart-box" style="height: {{ $chart['type'] === 'hbar' ? max(140, min(count($chart['labels']), 10) * 26 + 36) : 180 }}px">
+                            <canvas id="ov-{{ $chart['id'] }}" role="img" aria-label="{{ $chart['title'] }}"></canvas>
                         </div>
-                    </header>
-                    <div class="chart-box" style="height: {{ $chart['type'] === 'hbar' ? max(160, min(count($chart['labels']), 12) * 30 + 40) : 240 }}px">
-                        <canvas id="ov-{{ $chart['id'] }}" role="img" aria-label="{{ $chart['title'] }}"></canvas>
-                    </div>
-                </section>
-            @endforeach
-        </div>
+                    </section>
+                @endforeach
+            </div>
+        </details>
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                if (window.SygepCharts) { window.SygepCharts.render(@json($overview['charts']), 'ov-'); }
+                var box = document.getElementById('ov-toggle');
+                var drawn = false;
+                var key = 'sygep-overview-charts';
+                function draw() {
+                    if (drawn || !window.SygepCharts) return;
+                    drawn = true;
+                    window.SygepCharts.render(@json($overview['charts']), 'ov-');
+                }
+                try { if (localStorage.getItem(key) === 'open') box.open = true; } catch (e) {}
+                if (box.open) draw();
+                box.addEventListener('toggle', function () {
+                    try { localStorage.setItem(key, box.open ? 'open' : 'closed'); } catch (e) {}
+                    if (box.open) draw();
+                });
             });
         </script>
     @endif
