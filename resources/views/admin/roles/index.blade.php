@@ -79,11 +79,6 @@
                                 @can('role_show')
                                     <a class="btn btn-xs btn-icon" href="{{ route('admin.roles.show', $role->id) }}" title="Voir" aria-label="Voir"><i class="bi bi-eye"></i></a>
                                 @endcan
-
-                                @can('role_edit')
-                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.roles.edit', $role->id) }}" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
-                                @endcan
-
                             </td>
 
                         </tr>
