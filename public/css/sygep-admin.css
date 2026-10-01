@@ -477,6 +477,16 @@ a.kpi[href]:hover { border-color: #c9d7e6; box-shadow: 0 10px 24px -16px rgba(26
 .kpi-grid.kpi-auto { grid-template-columns: repeat(var(--kpi-cols, 4), minmax(0, 1fr)); margin-bottom: 18px; }
 .kpi-hint { font-size: 13px; color: var(--sy-muted); margin-top: 2px; }
 .overview-charts { margin-bottom: 18px; }
+.overview-toggle { margin-bottom: 18px; }
+.overview-toggle > summary {
+    display: inline-flex; align-items: center; gap: 8px; cursor: pointer; list-style: none; user-select: none;
+    padding: 8px 14px; border: 1px solid var(--sy-line); border-radius: 9px; background: #fff;
+    font-size: 14px; font-weight: 600; color: var(--sy-navy);
+}
+.overview-toggle > summary::-webkit-details-marker { display: none; }
+.overview-toggle > summary::after { content: '\F229'; font-family: 'bootstrap-icons'; font-size: 12px; margin-left: 4px; }
+.overview-toggle[open] > summary::after { content: '\F286'; }
+.overview-toggle[open] > summary { margin-bottom: 12px; }
 
 .sy-alerts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
 .sy-alert {

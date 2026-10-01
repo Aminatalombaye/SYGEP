@@ -859,7 +859,7 @@ class ModuleOverview
     {
         $rows = $this->table($table)
             ->select(DB::raw("COALESCE(NULLIF(TRIM($column), ''), 'Non renseigné') as label"), DB::raw('COUNT(*) as total'))
-            ->groupBy(DB::raw("COALESCE(NULLIF(TRIM($column), ''), 'Non renseigné')"))
+            ->groupBy('label')
             ->orderByDesc('total')
             ->get();
 
