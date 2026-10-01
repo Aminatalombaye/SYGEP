@@ -112,7 +112,7 @@
                         <a class="dropdown-item" href="{{ route('admin.notifications.index') }}"><i class="bi bi-bell"></i> Mes notifications @if($alertsCount)<span class="sy-count">{{ $alertsCount }}</span>@endif</a>
                         <a class="dropdown-item" href="{{ route('welcome') }}"><i class="bi bi-house"></i> Site public</a>
                         @can('profile_password_edit')
-                            <a class="dropdown-item" href="{{ route('profile.password.edit') }}"><i class="bi bi-key"></i> {{ trans('global.change_password') }}</a>
+                            <a class="dropdown-item" href="{{ route('profile.password.edit') }}"><i class="bi bi-person-circle"></i> Profil</a>
                         @endcan
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item text-danger" href="#" data-toggle="modal" data-target="#logoutModal"><i class="bi bi-box-arrow-right"></i> {{ trans('global.logout') }}</a>
