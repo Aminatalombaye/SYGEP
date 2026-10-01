@@ -207,10 +207,11 @@ class MaintenanceRequestsController extends Controller
             'infrastructure_id' => ['nullable', 'required_if:target_type,infrastructure', 'integer', 'exists:infrastructures,id'],
             'asset_id'          => ['nullable', 'required_if:target_type,asset', 'integer', 'exists:assets,id'],
             'establishment'     => ['nullable', 'string', 'max:255'],
-            'description'       => ['nullable', 'string', 'max:5000'],
+            'description'       => ['required', 'string', 'max:5000'],
         ], [
             'infrastructure_id.required_if' => 'Choisissez l\'infrastructure concernée.',
             'asset_id.required_if'          => 'Choisissez la matière concernée.',
+            'description.required'          => 'Décrivez le problème (constat, localisation, depuis quand) pour que le responsable puisse l\'évaluer.',
         ]);
     }
 

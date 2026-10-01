@@ -52,7 +52,7 @@
     @foreach([
         ['bi-calendar-month', 'Rapport mensuel', 'mois_precedent'],
         ['bi-calendar3', 'Rapport trimestriel', 'trimestre_precedent'],
-        ['bi-calendar-range', 'Bilan semestriel', 'semestre'],
+        ['bi-calendar-range', 'Bilan semestriel', 'semestre_precedent'],
         ['bi-calendar-check', 'Bilan annuel', 'annee_precedente'],
     ] as [$icon, $title, $period])
         <a class="sy-card" style="display:block; text-decoration:none" target="_blank"

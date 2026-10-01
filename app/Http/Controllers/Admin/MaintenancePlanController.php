@@ -110,18 +110,20 @@ class MaintenancePlanController extends Controller
     {
         $data = $request->validate([
             'title'             => ['required', 'string', 'max:255'],
-            'description'       => ['nullable', 'string', 'max:5000'],
+            'description'       => ['required', 'string', 'max:5000'],
             'target_type'       => ['required', Rule::in(['infrastructure', 'asset'])],
             'infrastructure_id' => ['nullable', 'required_if:target_type,infrastructure', 'integer', 'exists:infrastructures,id'],
             'asset_id'          => ['nullable', 'required_if:target_type,asset', 'integer', 'exists:assets,id'],
             'frequency_months'  => ['required', 'integer', 'min:1', 'max:120'],
-            'next_due_at'       => ['required', 'date'],
-            'lead_days'         => ['required', 'integer', 'min:0', 'max:90'],
+            'next_due_at'       => ['required', 'date', $request->isMethod('post') ? 'after_or_equal:today' : 'date'],
+            'lead_days'         => ['required', 'integer', 'min:0', 'max:90', fn ($attr, $value, $fail) => (int) $value >= (int) $request->input('frequency_months') * 30 ? $fail('Le délai de création doit rester inférieur à la périodicité du plan.') : null],
             'responsible_id'    => ['nullable', 'integer', 'exists:users,id'],
             'active'            => ['nullable', 'boolean'],
         ], [
             'infrastructure_id.required_if' => 'Choisissez l\'infrastructure à entretenir.',
             'asset_id.required_if'          => 'Choisissez la matière à entretenir.',
+            'description.required'          => 'Listez les points de contrôle à vérifier à chaque opération.',
+            'next_due_at.after_or_equal'    => 'La prochaine échéance ne peut pas être dans le passé.',
         ]);
 
         $data['active'] = $request->boolean('active');

@@ -90,7 +90,7 @@
                             </td>
                             <td>
                                 @foreach($task->equipements as $key => $item)
-                                    <span class="badge badge-info">{{ $item->serial_number }}</span>
+                                    <span class="badge badge-info">{{ $item->name }}{{ $item->serial_number ? " (".$item->serial_number.")" : "" }}</span>
                                 @endforeach
                             </td>
                             <td>

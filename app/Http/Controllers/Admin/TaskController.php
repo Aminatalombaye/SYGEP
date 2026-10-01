@@ -40,7 +40,7 @@ class TaskController extends Controller
 
         $assigned_tos = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $equipements = Asset::pluck('serial_number', 'id');
+        $equipements = Asset::orderBy('name')->get()->mapWithKeys(fn ($asset) => [$asset->id => trim($asset->name.' — '.($asset->qr_code ?: $asset->serial_number), ' —')]);
 
         return view('admin.tasks.create', compact('assigned_tos', 'equipements', 'statuses', 'tags'));
     }
@@ -71,7 +71,7 @@ class TaskController extends Controller
 
         $assigned_tos = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $equipements = Asset::pluck('serial_number', 'id');
+        $equipements = Asset::orderBy('name')->get()->mapWithKeys(fn ($asset) => [$asset->id => trim($asset->name.' — '.($asset->qr_code ?: $asset->serial_number), ' —')]);
 
         $task->load('status', 'tags', 'assigned_to', 'equipements');
 
