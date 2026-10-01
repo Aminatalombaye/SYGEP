@@ -483,6 +483,14 @@ a.kpi[href]:hover { border-color: #c9d7e6; box-shadow: 0 10px 24px -16px rgba(26
 
 /* Vue d'ensemble des modules */
 .kpi-grid.kpi-auto { grid-template-columns: repeat(var(--kpi-cols, 4), minmax(0, 1fr)); margin-bottom: 18px; }
+/* Tableau de bord : tuiles de même hauteur, valeurs alignées d'une carte à l'autre. */
+.kpi-uniform .kpi { min-height: 104px; }
+.kpi-uniform .kpi-label { line-height: 1.3; min-height: 2.6em; }
+@media (max-width: 575px) {
+    .kpi-grid.kpi-auto.kpi-uniform { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .kpi-uniform .kpi { flex-direction: column; align-items: flex-start; gap: 10px; min-height: 0; padding: 14px; }
+    .kpi-uniform .kpi-label { min-height: 0; }
+}
 .kpi-hint { font-size: 13px; color: var(--sy-muted); margin-top: 2px; }
 .overview-charts { margin-bottom: 18px; }
 .overview-toggle { margin-bottom: 18px; }
