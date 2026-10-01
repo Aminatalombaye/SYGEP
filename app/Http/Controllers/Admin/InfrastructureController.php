@@ -120,6 +120,31 @@ class InfrastructureController extends Controller
             'parent_id.not_in' => 'Une infrastructure ne peut pas être rattachée à elle-même.',
         ]);
 
+        $errors = [];
+
+        $parentNature = ! empty($data['parent_id']) ? Infrastructure::whereKey($data['parent_id'])->value('nature') : null;
+
+        if ($data['nature'] === 'structure' && $parentNature) {
+            $errors['parent_id'] = 'Une structure est un site principal : elle ne se rattache à rien.';
+        } elseif ($data['nature'] === 'batiment' && $parentNature && $parentNature !== 'structure') {
+            $errors['parent_id'] = 'Un bâtiment se rattache à une structure.';
+        } elseif ($data['nature'] === 'bloc' && $parentNature && ! in_array($parentNature, ['batiment', 'structure'], true)) {
+            $errors['parent_id'] = 'Un bloc se rattache à un bâtiment (ou directement à une structure).';
+        }
+
+        // Amortissement linéaire : valeur, date de mise en service et durée vont ensemble.
+        if (! empty($data['acquisition_value']) || ! empty($data['depreciation_years'])) {
+            foreach (['acquisition_value' => 'la valeur d\'origine', 'construction_date' => 'la date de mise en service', 'depreciation_years' => 'la durée'] as $field => $label) {
+                if (empty($data[$field])) {
+                    $errors[$field] = 'Pour calculer l\'amortissement, indiquez aussi '.$label.'.';
+                }
+            }
+        }
+
+        if ($errors) {
+            throw \Illuminate\Validation\ValidationException::withMessages($errors);
+        }
+
         $data['depreciation_plan'] = ! empty($data['depreciation_years']) ? $data['depreciation_years'].' ans' : null;
 
         return $data;
