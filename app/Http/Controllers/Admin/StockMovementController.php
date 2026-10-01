@@ -96,6 +96,13 @@ class StockMovementController extends Controller
         }
 
         $item = StockItem::findOrFail($data['stock_item_id']);
+
+        if ($data['type'] === 'entree' && $item->perishable && empty($data['expires_at'])) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'expires_at' => 'Cet article est périssable : indiquez la date de péremption du lot reçu.',
+            ]);
+        }
+
         $movement = $this->stock->record($item, $data['type'], (float) $data['quantity'], $data);
 
         $message = $movement->type_label.' '.$movement->reference.' enregistrée : '.$item->name.' — nouveau solde '

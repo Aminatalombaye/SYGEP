@@ -71,7 +71,8 @@
     <div class="form-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr))">
         <div class="form-group">
             <label for="construction_date">Mise en service</label>
-            <input class="form-control" type="date" name="construction_date" id="construction_date" value="{{ old('construction_date', $infrastructure->construction_date?->toDateString()) }}">
+            <input class="form-control {{ $errors->has('construction_date') ? 'is-invalid' : '' }}" type="date" name="construction_date" id="construction_date" value="{{ old('construction_date', $infrastructure->construction_date?->toDateString()) }}">
+            @error('construction_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
         <div class="form-group">
             <label for="acquisition_value">Valeur d'origine (FCFA)</label>
