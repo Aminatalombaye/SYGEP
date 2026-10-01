@@ -54,7 +54,7 @@
         <label for="expected_return_at">Retour prévu</label>
         <input type="date" name="expected_return_at" id="expected_return_at" class="form-control {{ $errors->has('expected_return_at') ? 'is-invalid' : '' }}"
                value="{{ old('expected_return_at') }}">
-        <div class="hint">Laisser vide pour une dotation sans date de retour.</div>
+        <div class="hint">Obligatoire sauf pour une dotation durable ou un programme / projet.</div>
         @error('expected_return_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 

@@ -39,6 +39,9 @@
                             {{ trans('cruds.bon.fields.date_livraison') }}
                         </th>
                         <th>
+                            Matières
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -69,6 +72,9 @@
                             </td>
                             <td>
                                 {{ $bon->date_livraison ?? '' }}
+                            </td>
+                            <td>
+                                {{ $bon->assets_count }}
                             </td>
                             <td>
                                 @can('bon_show')

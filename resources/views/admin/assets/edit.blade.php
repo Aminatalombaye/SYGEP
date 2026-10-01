@@ -132,8 +132,8 @@
                 <span class="help-block">{{ trans('cruds.asset.fields.modele_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="fournisseurs">{{ trans('cruds.asset.fields.fournisseur') }}</label>
-                <select class="form-control select2 {{ $errors->has('fournisseurs') ? 'is-invalid' : '' }}" name="fournisseurs[]" id="fournisseurs" required>
+                <label for="fournisseurs">{{ trans('cruds.asset.fields.fournisseur') }}</label>
+                <select class="form-control select2 {{ $errors->has('fournisseurs') ? 'is-invalid' : '' }}" name="fournisseurs[]" id="fournisseurs">
                     <option value="">{{ trans('global.pleaseSelect') }}</option>
                     @foreach($fournisseurs as $id => $fournisseur)
                         <option value="{{ $id }}" {{ (in_array($id, old('fournisseurs', [])) || $asset->fournisseurs->contains($id)) ? 'selected' : '' }}>{{ $fournisseur }}</option>
@@ -147,8 +147,8 @@
                 <span class="help-block">{{ trans('cruds.asset.fields.fournisseur_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="bons">{{ trans('cruds.asset.fields.bon') }}</label>
-                <select class="form-control select2 {{ $errors->has('bons') ? 'is-invalid' : '' }}" name="bons[]" id="bons" required>
+                <label for="bons">{{ trans('cruds.asset.fields.bon') }}</label>
+                <select class="form-control select2 {{ $errors->has('bons') ? 'is-invalid' : '' }}" name="bons[]" id="bons">
                     <option value="">{{ trans('global.pleaseSelect') }}</option>
                     @foreach($bons as $id => $bon)
                         <option value="{{ $id }}" {{ (in_array($id, old('bons', [])) || $asset->bons->contains($id)) ? 'selected' : '' }}>{{ $bon }}</option>
