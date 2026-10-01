@@ -366,13 +366,12 @@
                 </a>
             </li>
         @endcan
+        <li class="c-sidebar-nav-item sy-sidebar-foot">
+            <a href="#" class="c-sidebar-nav-link" data-toggle="modal" data-target="#logoutModal">
+                <i class="bi bi-box-arrow-right c-sidebar-nav-icon"></i>
+                {{ trans('global.logout') }}
+            </a>
+        </li>
     </ul>
-
-    <div class="sy-sidebar-foot">
-        <a href="#" class="c-sidebar-nav-link" data-toggle="modal" data-target="#logoutModal">
-            <i class="bi bi-box-arrow-right c-sidebar-nav-icon"></i>
-            {{ trans('global.logout') }}
-        </a>
-    </div>
 
 </div>

@@ -127,11 +127,13 @@ body.c-app {
     .c-sidebar { transform: none !important; }
 }
 
-/* Déconnexion : épinglée en bas du menu, hors de la liste défilante */
-.c-sidebar { display: flex; flex-direction: column; }
-.c-sidebar .c-sidebar-nav { flex: 1 1 auto; min-height: 0; }
-.sy-sidebar-foot { flex: 0 0 auto; padding: 8px 10px; border-top: 1px solid var(--sy-line); background: var(--sy-surface); }
-.sy-sidebar-foot .c-sidebar-nav-link { display: flex; align-items: center; color: var(--sy-critical, #c0392b) !important; font-weight: 600; }
+/* Déconnexion : dernier élément du menu, épinglé en bas (reste dans la liste pour ne pas gêner le script CoreUI) */
+.c-sidebar .c-sidebar-nav { display: flex; flex-direction: column; }
+.c-sidebar .c-sidebar-nav > .sy-sidebar-foot {
+    margin-top: auto; position: sticky; bottom: 0; z-index: 2;
+    padding: 8px 0 4px; background: var(--sy-surface); border-top: 1px solid var(--sy-line);
+}
+.sy-sidebar-foot .c-sidebar-nav-link { color: var(--sy-critical, #c0392b) !important; font-weight: 600; }
 .sy-sidebar-foot .c-sidebar-nav-link .c-sidebar-nav-icon { color: inherit !important; }
 .sy-sidebar-foot .c-sidebar-nav-link:hover { background: var(--sy-critical-bg, #fdecec) !important; }
 
