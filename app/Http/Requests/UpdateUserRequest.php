@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Role;
 use App\Models\User;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
@@ -38,5 +39,22 @@ class UpdateUserRequest extends FormRequest
                 'array',
             ],
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($this->filled('service_id') || ! is_array($this->input('roles'))) {
+                return;
+            }
+
+            $needsService = Role::whereIn('id', $this->input('roles'))
+                ->whereHas('permissions', fn ($q) => $q->where('title', 'perimetre_service'))
+                ->exists();
+
+            if ($needsService) {
+                $validator->errors()->add('service_id', 'Le service de rattachement est obligatoire pour ce rôle.');
+            }
+        });
     }
 }
