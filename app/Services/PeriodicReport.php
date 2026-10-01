@@ -36,6 +36,7 @@ class PeriodicReport
         'trimestre'           => 'Trimestre en cours',
         'trimestre_precedent' => 'Trimestre précédent',
         'semestre'            => 'Semestre en cours',
+        'semestre_precedent'  => 'Semestre précédent',
         'annee'               => 'Année en cours',
         'annee_precedente'    => 'Année précédente',
         'personnalisee'       => 'Période personnalisée',
@@ -51,8 +52,11 @@ class PeriodicReport
             'trimestre'           => [$now->copy()->startOfQuarter(), $now->copy()->endOfQuarter()],
             'trimestre_precedent' => [$now->copy()->subQuarterNoOverflow()->startOfQuarter(), $now->copy()->subQuarterNoOverflow()->endOfQuarter()],
             'semestre'            => $now->month <= 6
-                ? [$now->copy()->startOfYear(), $now->copy()->month(6)->endOfMonth()]
-                : [$now->copy()->month(7)->startOfMonth(), $now->copy()->endOfYear()],
+                ? [Carbon::create($now->year, 1, 1)->startOfDay(), Carbon::create($now->year, 6, 30)->endOfDay()]
+                : [Carbon::create($now->year, 7, 1)->startOfDay(), Carbon::create($now->year, 12, 31)->endOfDay()],
+            'semestre_precedent'  => $now->month <= 6
+                ? [Carbon::create($now->year - 1, 7, 1)->startOfDay(), Carbon::create($now->year - 1, 12, 31)->endOfDay()]
+                : [Carbon::create($now->year, 1, 1)->startOfDay(), Carbon::create($now->year, 6, 30)->endOfDay()],
             'annee'               => [$now->copy()->startOfYear(), $now->copy()->endOfYear()],
             'annee_precedente'    => [$now->copy()->subYear()->startOfYear(), $now->copy()->subYear()->endOfYear()],
             'personnalisee'       => [
