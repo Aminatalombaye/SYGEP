@@ -24,11 +24,11 @@ class UpdateBonRequest extends FormRequest
             'organisation' => [
                 'string',
                 'required',
-                'unique:bons,organisation,' . request()->route('bon')->id,
             ],
             'reference_commande' => [
                 'string',
                 'required',
+                'unique:bons,reference_commande,' . request()->route('bon')->id,
             ],
             'nom_destinataire' => [
                 'string',
@@ -36,11 +36,12 @@ class UpdateBonRequest extends FormRequest
             ],
             'bon' => [
                 'string',
-                'nullable',
+                'required',
             ],
             'date_livraison' => [
                 'date_format:' . config('panel.date_format'),
                 'nullable',
+                'after_or_equal:date_emission',
             ],
         ];
     }
