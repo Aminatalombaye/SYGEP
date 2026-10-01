@@ -24,7 +24,10 @@
                             {{ trans('cruds.role.fields.title') }}
                         </th>
                         <th>
-                            {{ trans('cruds.role.fields.permissions') }}
+                            Description
+                        </th>
+                        <th>
+                            Droits par domaine
                         </th>
                         <th>
                             &nbsp;
@@ -41,12 +44,36 @@
                                 {{ $role->id ?? '' }}
                             </td>
                             <td>
-                                {{ $role->title ?? '' }}
+                                <strong>{{ $role->title ?? '' }}</strong>
                             </td>
-                            <td>
-                                @foreach($role->permissions as $key => $item)
-                                    <span class="badge badge-info">{{ $item->title }}</span>
-                                @endforeach
+                            <td style="min-width: 260px; max-width: 420px; white-space: normal">
+                                {{ $role->description ?: '—' }}
+                            </td>
+                            <td data-order="{{ $role->permissions->count() }}">
+                                @php
+                                    $catalog = \App\Support\PermissionCatalog::class;
+                                    $mine = $role->permissions->countBy(fn ($p) => $catalog::sectionOf($catalog::parse($p->title)[0]));
+                                    $total = $sectionTotals->sum();
+                                    $short = ['admin' => 'Administration', 'matieres' => 'Matières', 'stock' => 'Stock', 'infrastructures' => 'Infrastructures', 'maintenance' => 'Maintenance', 'rapports' => 'Rapports', 'autres' => 'Autres'];
+                                @endphp
+                                <div class="role-perms">
+                                    @if($role->permissions->isEmpty())
+                                        <span class="muted">Aucun droit</span>
+                                    @elseif($role->permissions->count() >= $total)
+                                        <span class="role-perm is-full"><i class="bi bi-stars"></i> Tous les droits</span>
+                                    @else
+                                        @foreach($catalog::SECTIONS as $key => [$label, $icon])
+                                            @continue(empty($mine[$key]))
+                                            <span class="role-perm {{ $mine[$key] >= ($sectionTotals[$key] ?? 0) ? 'is-full' : '' }}" title="{{ $label }} : {{ $mine[$key] }} droit(s) sur {{ $sectionTotals[$key] ?? 0 }}">
+                                                <i class="bi {{ $icon }}"></i> {{ $short[$key] }}
+                                                <strong>{{ $mine[$key] }}<small>/{{ $sectionTotals[$key] ?? 0 }}</small></strong>
+                                            </span>
+                                        @endforeach
+                                    @endif
+                                </div>
+                                <div class="muted" style="margin-top: 4px">
+                                    {{ $role->permissions->count() }} droit(s) · {{ $role->users_count }} utilisateur(s)
+                                </div>
                             </td>
                             <td>
                                 @can('role_show')
@@ -55,14 +82,6 @@
 
                                 @can('role_edit')
                                     <a class="btn btn-xs btn-icon" href="{{ route('admin.roles.edit', $role->id) }}" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
-                                @endcan
-
-                                @can('role_delete')
-                                    <form action="{{ route('admin.roles.destroy', $role->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <button type="submit" class="btn btn-xs btn-icon btn-icon-danger" title="Supprimer" aria-label="Supprimer"><i class="bi bi-trash3"></i></button>
-                                    </form>
                                 @endcan
 
                             </td>

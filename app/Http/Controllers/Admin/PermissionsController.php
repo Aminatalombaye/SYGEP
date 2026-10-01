@@ -17,7 +17,7 @@ class PermissionsController extends Controller
     {
         abort_if(Gate::denies('permission_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $permissions = Permission::all();
+        $permissions = Permission::with(['roles' => fn ($q) => $q->orderBy('title')])->orderBy('title')->get();
 
         return view('admin.permissions.index', compact('permissions'));
     }
@@ -53,6 +53,8 @@ class PermissionsController extends Controller
     public function show(Permission $permission)
     {
         abort_if(Gate::denies('permission_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $permission->load(['roles' => fn ($q) => $q->orderBy('title')]);
 
         return view('admin.permissions.show', compact('permission'));
     }

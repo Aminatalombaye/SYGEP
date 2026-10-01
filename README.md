@@ -5,13 +5,16 @@ Formation Professionnelle et Technique (MEFPT).
 
 ## Fonctionnalités
 
-- Inventaire des matières, catégories, emplacements et statuts
-- Affectations aux agents et aux services, historique des mouvements
-- Infrastructures, projets, rapports et chefs de projet
-- Tâches et demandes de maintenance
-- Tableau de bord avec indicateurs et graphiques
-- Gestion des utilisateurs, rôles et permissions
-- Page de contact publique et consultation des messages dans l'espace admin
+- **Matières** : enregistrement, catégories, emplacements, statuts, étiquettes QR et scan depuis un téléphone
+- **Affectations** : bons d'affectation imprimables, restitutions et transferts entre agents et services
+- **Inventaires** : campagnes de contrôle par scan et procès-verbal
+- **Stock des consommables** : articles, entrées, sorties, ajustements, seuils d'alerte et péremption
+- **Infrastructures** : structures, bâtiments et blocs, état constaté, plan d'amortissement
+- **Projets** : jalons, avancement, budget et intervenants
+- **Maintenance** : demandes avec avis technique et approbation du Directeur, planification et maintenance préventive
+- **Rapports périodiques** imprimables pour la direction
+- **Tableaux de bord** par module et notifications internes
+- **Utilisateurs et rôles** : profils métier et périmètre limité au service pour les comptes locaux
 
 ## Prérequis
 
@@ -28,6 +31,7 @@ cp .env.example .env
 php artisan key:generate
 # renseigner DB_* et CONTACT_* dans .env
 php artisan migrate --seed
+php artisan sygep:profils --reinitialiser
 php artisan storage:link
 npm install
 ```
@@ -45,4 +49,4 @@ CONTACT_HORAIRES=
 
 ## Stack
 
-Laravel 13, Blade, CoreUI 3, DataTables, Chart.js, Spatie Media Library.
+Laravel 13, Blade, CoreUI 3, DataTables, Chart.js, html5-qrcode, Spatie Media Library.

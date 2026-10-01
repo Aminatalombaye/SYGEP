@@ -4,119 +4,78 @@
     'title' => trans('cruds.permission.title'),
     'create' => ['route' => 'admin.permissions.create', 'can' => 'permission_create', 'label' => trans('global.add').' '.trans('cruds.permission.title_singular')],
 ])
-<div class="card">
-    <div class="card-header">
-        Liste
-    </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Permission">
-                <thead>
-                    <tr>
-                        <th width="10">
+@php($groups = \App\Support\PermissionCatalog::group($permissions))
+@php($actions = \App\Support\PermissionCatalog::ACTIONS)
 
-                        </th>
-                        <th>
-                            {{ trans('cruds.permission.fields.id') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.permission.fields.title') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($permissions as $key => $permission)
-                        <tr data-entry-id="{{ $permission->id }}">
-                            <td>
-
-                            </td>
-                            <td>
-                                {{ $permission->id ?? '' }}
-                            </td>
-                            <td>
-                                {{ $permission->title ?? '' }}
-                            </td>
-                            <td>
-                                @can('permission_show')
-                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.permissions.show', $permission->id) }}" title="Voir" aria-label="Voir"><i class="bi bi-eye"></i></a>
-                                @endcan
-
-                                @can('permission_edit')
-                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.permissions.edit', $permission->id) }}" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
-                                @endcan
-
-                                @can('permission_delete')
-                                    <form action="{{ route('admin.permissions.destroy', $permission->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <button type="submit" class="btn btn-xs btn-icon btn-icon-danger" title="Supprimer" aria-label="Supprimer"><i class="bi bi-trash3"></i></button>
-                                    </form>
-                                @endcan
-
-                            </td>
-
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+<div class="perm-browser">
+    <div class="perm-matrix-head">
+        <p class="muted mb-0">Chaque pastille indique le nombre de rôles qui possèdent le droit. Cliquez dessus pour voir le détail.</p>
+        <div class="perm-tools">
+            <input type="search" class="form-control form-control-sm" placeholder="Filtrer les modules…" data-perm-browser-filter>
         </div>
     </div>
+
+    @foreach($groups as $sectionKey => $section)
+        <section class="sy-card" data-perm-browser-section>
+            <div class="sy-card-head">
+                <h2><i class="bi {{ $section['icon'] }}"></i> {{ $section['label'] }}</h2>
+                <span class="muted">{{ collect($section['modules'])->sum(fn ($m) => collect($m['actions'])->flatten(1)->count()) }} permission(s)</span>
+            </div>
+            <div class="sy-card-body flush">
+                <div class="table-responsive">
+                    <table class="dash-table perm-browser-table">
+                        <thead>
+                            <tr>
+                                <th>Module</th>
+                                @foreach($actions as $label)<th class="text-center">{{ $label }}</th>@endforeach
+                                <th>Autres droits</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($section['modules'] as $module => $info)
+                                <tr data-perm-browser-row data-name="{{ \Illuminate\Support\Str::lower($section['label'].' '.$info['label'].' '.$module) }}">
+                                    <td class="strong">{{ $info['label'] }}</td>
+                                    @foreach(array_keys($actions) as $action)
+                                        <td class="text-center">
+                                            @foreach($info['actions'][$action] ?? [] as $perm)
+                                                @include('admin.permissions.partials.chip', ['perm' => $perm, 'label' => null])
+                                            @endforeach
+                                        </td>
+                                    @endforeach
+                                    <td>
+                                        @foreach($info['actions']['other'] ?? [] as $perm)
+                                            @include('admin.permissions.partials.chip', ['perm' => $perm, 'label' => \App\Support\PermissionCatalog::actionLabel($perm->title)])
+                                        @endforeach
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    @endforeach
 </div>
-
-
-
 @endsection
+
 @section('scripts')
 @parent
 <script>
-    $(function () {
-  let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-@can('permission_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
-  let deleteButton = {
-    text: deleteButtonTrans,
-    url: "{{ route('admin.permissions.massDestroy') }}",
-    className: 'btn-danger',
-    action: function (e, dt, node, config) {
-      var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
-          return $(entry).data('entry-id')
-      });
-
-      if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
-
-        return
-      }
-
-      if (confirm('{{ trans('global.areYouSure') }}')) {
-        $.ajax({
-          headers: {'x-csrf-token': _token},
-          method: 'POST',
-          url: config.url,
-          data: { ids: ids, _method: 'DELETE' }})
-          .done(function () { location.reload() })
-      }
-    }
-  }
-  dtButtons.push(deleteButton)
-@endcan
-
-  $.extend(true, $.fn.dataTable.defaults, {
-    orderCellsTop: true,
-    order: [[ 1, 'desc' ]],
-    pageLength: 100,
-  });
-  let table = $('.datatable-Permission:not(.ajaxTable)').DataTable({ buttons: dtButtons })
-  $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
-      $($.fn.dataTable.tables(true)).DataTable()
-          .columns.adjust();
-  });
-  
-})
-
+(function () {
+    var filter = document.querySelector('[data-perm-browser-filter]');
+    if (!filter) return;
+    filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        document.querySelectorAll('[data-perm-browser-section]').forEach(function (section) {
+            var shown = 0;
+            section.querySelectorAll('[data-perm-browser-row]').forEach(function (tr) {
+                tr.hidden = q && tr.getAttribute('data-name').indexOf(q) === -1;
+                if (!tr.hidden) shown++;
+            });
+            section.hidden = shown === 0;
+        });
+    });
+})();
 </script>
 @endsection

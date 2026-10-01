@@ -36,12 +36,14 @@ class RoleProfiles
     public const PROFILES = [
         'super_admin' => [
             'title' => 'Super administrateur',
+            'description' => 'Accès complet à toutes les fonctions de SYGEP, sans restriction. Réservé au responsable de la plateforme.',
             'match' => ['^admin$', 'super'],
             'allow' => ['*'],
             'deny'  => ['perimetre_service'],
         ],
         'admin_systeme' => [
             'title' => 'Administrateur système',
+            'description' => 'Administration technique : comptes utilisateurs, rôles, permissions et notifications. N\'intervient pas sur les données métier.',
             'match' => ['administrateur syst', 'admin.*syst'],
             'allow' => [
                 'user_management_access', 'user_*', 'role_*', 'permission_*', 'user_alert_*',
@@ -51,12 +53,14 @@ class RoleProfiles
         ],
         'directeur' => [
             'title' => 'Directeur',
+            'description' => 'Consulte l\'ensemble des modules, approuve les demandes de maintenance et produit les rapports périodiques.',
             'match' => ['directeur', 'direction'],
             'allow' => ['*_access', '*_show', 'maintenance_request_approve', 'periodic_report_access'],
             'deny'  => ['perimetre_service', 'permission_*', 'role_*', 'user_access', 'user_show', 'user_management_access'],
         ],
         'comptable_principal' => [
             'title' => 'Comptable matière principal',
+            'description' => 'Supervise la comptabilité des matières de tous les services : affectations, clôture des inventaires, ajustements de stock et rapports.',
             'match' => ['comptable.*principal'],
             'allow' => [
                 ...self::READ_ASSETS, 'supplier_access', 'supplier_show', 'bon_access', 'bon_show',
@@ -69,6 +73,7 @@ class RoleProfiles
         ],
         'administrateur_matieres' => [
             'title' => 'Administrateur des matières',
+            'description' => 'Gère les référentiels (catégories, emplacements, fournisseurs, bons), enregistre les matières, les affectations et les mouvements du magasin central.',
             'match' => ['mati[eè]re'],
             'allow' => [
                 ...self::READ_ASSETS, ...self::REFERENTIALS,
@@ -81,6 +86,7 @@ class RoleProfiles
         ],
         'comptable_secondaire' => [
             'title' => 'Comptable matière secondaire',
+            'description' => 'Gère les matières de son service uniquement : affectations aux agents, restitutions, inventaires et sorties de stock.',
             'match' => ['comptable.*secondaire'],
             'allow' => [
                 'perimetre_service', ...self::READ_ASSETS, 'asset_edit',
@@ -94,6 +100,7 @@ class RoleProfiles
         ],
         'responsable_maintenance' => [
             'title' => 'Responsable maintenance',
+            'description' => 'Donne l\'avis technique sur les demandes, planifie et suit les interventions, gère la maintenance préventive.',
             'match' => ['maintenance'],
             'allow' => [
                 'task_management_access', 'task_*', 'tasks_calendar_access', 'maintenance_request_*', 'maintenance_plan_*',
@@ -104,6 +111,7 @@ class RoleProfiles
         ],
         'responsable_infrastructures' => [
             'title' => 'Responsable infrastructures',
+            'description' => 'Suit les infrastructures, les projets de construction et de réhabilitation, leurs jalons et leurs intervenants.',
             'match' => ['infrastructure'],
             'allow' => [
                 'infrastructure_management_access', 'infrastructure_*', 'project_*', 'report_*', 'chef_projet_*', 'intervenant_*',
@@ -113,6 +121,7 @@ class RoleProfiles
         ],
         'agent' => [
             'title' => 'Agent / demandeur',
+            'description' => 'Consulte le matériel de son service et dépose des demandes de maintenance.',
             'match' => ['agent', 'demandeur'],
             'allow' => ['perimetre_service', 'asset_management_access', 'asset_access', 'asset_show', ...self::REQUESTER],
             'deny'  => [],
@@ -134,7 +143,9 @@ class RoleProfiles
         $report = [];
 
         foreach (self::PROFILES as $profile) {
-            $role = $roles->first(fn ($r) => ! in_array($r->id, $used, true) && self::matches($r->title, $profile['match']));
+            // Un rôle portant déjà exactement ce nom est prioritaire (évite les doublons).
+            $role = $roles->first(fn ($r) => ! in_array($r->id, $used, true) && mb_strtolower(trim($r->title)) === mb_strtolower($profile['title']))
+                ?? $roles->first(fn ($r) => ! in_array($r->id, $used, true) && self::matches($r->title, $profile['match']));
 
             if (! $role) {
                 $id = DB::table('roles')->insertGetId(['title' => $profile['title'], 'created_at' => now(), 'updated_at' => now()]);
@@ -143,6 +154,12 @@ class RoleProfiles
                 DB::table('roles')->where('id', $role->id)->update(['title' => $profile['title'], 'updated_at' => now()]);
             }
             $used[] = $role->id;
+
+            if (\Illuminate\Support\Facades\Schema::hasColumn('roles', 'description')) {
+                DB::table('roles')->where('id', $role->id)
+                    ->where(fn ($q) => $q->whereNull('description')->orWhere('description', ''))
+                    ->update(['description' => $profile['description']]);
+            }
 
             $wanted = self::permissionsFor($profile, $permissions);
 

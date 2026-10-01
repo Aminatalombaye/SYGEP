@@ -618,6 +618,7 @@ class ModuleOverview
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
             ->join('users', 'users.id', '=', 'role_user.user_id')
             ->when($this->hasSoftDeletes('users'), fn ($q) => $q->whereNull('users.deleted_at'))
+            ->whereNull('roles.deleted_at')
             ->select('roles.title as label', DB::raw('COUNT(*) as total'))
             ->groupBy('roles.id', 'roles.title')
             ->orderByDesc('total')
@@ -645,6 +646,9 @@ class ModuleOverview
     {
         $byRole = DB::table('role_user')
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
+            ->join('users', 'users.id', '=', 'role_user.user_id')
+            ->whereNull('roles.deleted_at')
+            ->whereNull('users.deleted_at')
             ->select('roles.title as label', DB::raw('COUNT(*) as total'))
             ->groupBy('roles.id', 'roles.title')
             ->orderByDesc('total')
@@ -652,6 +656,7 @@ class ModuleOverview
 
         $permsByRole = DB::table('permission_role')
             ->join('roles', 'roles.id', '=', 'permission_role.role_id')
+            ->whereNull('roles.deleted_at')
             ->select('roles.title as label', DB::raw('COUNT(*) as total'))
             ->groupBy('roles.id', 'roles.title')
             ->orderByDesc('total')
@@ -662,7 +667,7 @@ class ModuleOverview
             'kpis' => [
                 $this->kpi('Rôles', $this->table('roles')->count(), 'bi-person-badge'),
                 $this->kpi('Permissions', $this->table('permissions')->count(), 'bi-shield-lock'),
-                $this->kpi('Utilisateurs avec rôle', DB::table('role_user')->distinct()->count('user_id'), 'bi-people'),
+                $this->kpi('Utilisateurs avec rôle', DB::table('role_user')->join('roles', 'roles.id', '=', 'role_user.role_id')->whereNull('roles.deleted_at')->distinct()->count('role_user.user_id'), 'bi-people'),
             ],
             'charts' => [
                 $this->chart('roles-users', 'Utilisateurs par rôle', null, $this->rows($byRole)),
@@ -675,21 +680,27 @@ class ModuleOverview
     public function permissions(): array
     {
         $titles = $this->table('permissions')->pluck('title');
-        $modules = $titles->map(fn ($t) => preg_replace('/_(access|create|edit|show|delete|return|management_access)$/', '', (string) $t))
-            ->countBy()
-            ->sortDesc();
+        $catalog = \App\Support\PermissionCatalog::class;
+
+        $bySection = $titles->countBy(fn ($t) => $catalog::sectionLabel((string) $t));
+        $sections = collect($catalog::SECTIONS)->map(fn ($s) => $s[0])
+            ->filter(fn ($label) => $bySection->has($label));
+        $modules = $titles->map(fn ($t) => $catalog::parse((string) $t)[0])->unique()->count();
+        $unused = $this->table('permissions')->whereNotExists(fn ($q) => $q->from('permission_role')
+            ->join('roles', 'roles.id', '=', 'permission_role.role_id')->whereNull('roles.deleted_at')
+            ->whereColumn('permission_role.permission_id', 'permissions.id'))->count();
 
         return [
-            'subtitle' => 'Droits élémentaires attribués aux rôles.',
+            'subtitle' => 'Droits élémentaires attribués aux rôles, classés par domaine.',
             'kpis' => [
-                $this->kpi('Permissions', $titles->count(), 'bi-shield-lock'),
-                $this->kpi('Modules couverts', $modules->count(), 'bi-grid'),
-                $this->kpi('Non attribuées', $this->table('permissions')->whereNotExists(fn ($q) => $q->from('permission_role')->whereColumn('permission_role.permission_id', 'permissions.id'))->count(), 'bi-slash-circle'),
+                $this->kpi('Droits', $titles->count(), 'bi-shield-lock'),
+                $this->kpi('Domaines', $sections->count(), 'bi-grid', null, $modules.' modules'),
+                $this->kpi('Non attribués', $unused, 'bi-slash-circle', $unused ? 'warning' : null, $unused ? 'aucun rôle ne les possède' : null),
             ],
             'charts' => [
-                $this->chart('perms-module', 'Permissions par module', null, [
-                    'labels' => $modules->keys()->take(15)->map(fn ($k) => str_replace('_', ' ', $k))->values()->all(),
-                    'values' => $modules->values()->take(15)->all(),
+                $this->chart('perms-section', 'Droits par domaine', 'Nombre de droits disponibles dans chaque partie de l\'application', [
+                    'labels' => $sections->values()->all(),
+                    'values' => $sections->map(fn ($label) => (int) $bySection[$label])->values()->all(),
                 ], 'hbar', true),
             ],
             'alerts' => [],

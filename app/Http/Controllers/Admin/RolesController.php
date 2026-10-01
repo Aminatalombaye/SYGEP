@@ -18,9 +18,16 @@ class RolesController extends Controller
     {
         abort_if(Gate::denies('role_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $roles = Role::with(['permissions'])->get();
+        $roles = Role::with(['permissions'])->withCount('users')->get();
 
-        return view('admin.roles.index', compact('roles'));
+        // Nombre de droits disponibles par domaine, pour afficher « 12 / 40 ».
+        $sectionTotals = Permission::pluck('title')->countBy(function ($title) {
+            [$module] = \App\Support\PermissionCatalog::parse($title);
+
+            return \App\Support\PermissionCatalog::sectionOf($module);
+        });
+
+        return view('admin.roles.index', compact('roles', 'sectionTotals'));
     }
 
     public function create()
@@ -63,9 +70,12 @@ class RolesController extends Controller
     {
         abort_if(Gate::denies('role_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $role->load('permissions');
+        $role->load(['permissions', 'users' => fn ($q) => $q->with('service')->orderBy('name')]);
 
-        return view('admin.roles.show', compact('role'));
+        return view('admin.roles.show', [
+            'role'        => $role,
+            'permissions' => Permission::orderBy('title')->get(['id', 'title']),
+        ]);
     }
 
     public function destroy(Role $role)

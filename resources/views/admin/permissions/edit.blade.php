@@ -16,7 +16,7 @@
                         {{ $errors->first('title') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.permission.fields.title_helper') }}</span>
+                <span class="help-block">Code technique au format <code>module_action</code> (ex. : <code>stock_item_edit</code>) : le droit est alors classé automatiquement dans la bonne section.</span>
             </div>
             <div class="sy-form-actions">
                 <a href="{{ route('admin.permissions.index') }}" class="btn btn-default">Annuler</a>

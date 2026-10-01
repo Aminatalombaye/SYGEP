@@ -17,6 +17,12 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.role.fields.title_helper') }}</span>
             </div>
+            <div class="form-group">
+                <label for="description">Description du rôle</label>
+                <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description" rows="3" placeholder="Missions et responsabilités de ce rôle : ce qu'il peut faire, sur quel périmètre…">{{ old('description', '') }}</textarea>
+                @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <span class="help-block">Affichée dans la liste des rôles pour aider à choisir le bon rôle lors de la création d'un compte.</span>
+            </div>
             @include('admin.roles.partials.permissions', ['selected' => old('permissions', [])])
             <div class="sy-form-actions">
                 <a href="{{ route('admin.roles.index') }}" class="btn btn-default">Annuler</a>
