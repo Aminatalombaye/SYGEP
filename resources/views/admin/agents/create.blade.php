@@ -8,7 +8,7 @@
         <form class="sy-form-grid" method="POST" action="{{ route('admin.agents.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
-                <label for="nom">{{ trans('cruds.agent.fields.nom') }}</label>
+                <label class="required" for="nom">{{ trans('cruds.agent.fields.nom') }}</label>
                 <input class="form-control {{ $errors->has('nom') ? 'is-invalid' : '' }}" type="text" name="nom" id="nom" value="{{ old('nom', '') }}">
                 @if($errors->has('nom'))
                     <div class="invalid-feedback">
@@ -18,7 +18,7 @@
                 <span class="help-block">{{ trans('cruds.agent.fields.nom_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="prenom">{{ trans('cruds.agent.fields.prenom') }}</label>
+                <label class="required" for="prenom">{{ trans('cruds.agent.fields.prenom') }}</label>
                 <input class="form-control {{ $errors->has('prenom') ? 'is-invalid' : '' }}" type="text" name="prenom" id="prenom" value="{{ old('prenom', '') }}">
                 @if($errors->has('prenom'))
                     <div class="invalid-feedback">
@@ -48,7 +48,7 @@
                 <span class="help-block">{{ trans('cruds.agent.fields.email_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="telephone">{{ trans('cruds.agent.fields.telephone') }}</label>
+                <label class="required" for="telephone">{{ trans('cruds.agent.fields.telephone') }}</label>
                 <input class="form-control {{ $errors->has('telephone') ? 'is-invalid' : '' }}" type="text" name="telephone" id="telephone" value="{{ old('telephone', '') }}">
                 @if($errors->has('telephone'))
                     <div class="invalid-feedback">
@@ -58,7 +58,7 @@
                 <span class="help-block">{{ trans('cruds.agent.fields.telephone_helper') }}</span>
             </div>
             <div class="form-group">
-    <label for="service">{{ trans('cruds.agent.fields.service') }}</label>
+    <label class="required" for="service">{{ trans('cruds.agent.fields.service') }}</label>
     <select class="form-control {{ $errors->has('service_id') ? 'is-invalid' : '' }}" name="service_id" id="service">
         <option value="">{{ trans('global.pleaseSelect') }}</option>
         @foreach($services as $id => $nom)
