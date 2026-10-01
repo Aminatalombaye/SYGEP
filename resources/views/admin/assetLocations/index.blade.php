@@ -1,17 +1,12 @@
 @extends('layouts.admin')
 @section('content')
-@can('asset_location_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.asset-locations.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.assetLocation.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
+@include('partials.module-overview', [
+    'title' => trans('cruds.assetLocation.title'),
+    'create' => ['route' => 'admin.asset-locations.create', 'can' => 'asset_location_create', 'label' => trans('global.add').' '.trans('cruds.assetLocation.title_singular')],
+])
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.assetLocation.title_singular') }} {{ trans('global.list') }}
+        Liste
     </div>
 
     <div class="card-body">
@@ -47,22 +42,18 @@
                             </td>
                             <td>
                                 @can('asset_location_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.asset-locations.show', $assetLocation->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
+                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.asset-locations.show', $assetLocation->id) }}" title="Voir" aria-label="Voir"><i class="bi bi-eye"></i></a>
                                 @endcan
 
                                 @can('asset_location_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.asset-locations.edit', $assetLocation->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
+                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.asset-locations.edit', $assetLocation->id) }}" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
                                 @endcan
 
                                 @can('asset_location_delete')
                                     <form action="{{ route('admin.asset-locations.destroy', $assetLocation->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        <button type="submit" class="btn btn-xs btn-icon btn-icon-danger" title="Supprimer" aria-label="Supprimer"><i class="bi bi-trash3"></i></button>
                                     </form>
                                 @endcan
 

@@ -1,97 +1,70 @@
 @extends('layouts.admin')
-@section('content')
-@can('inventaire_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.inventaires.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.inventaire.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
-<div class="card">
-    <div class="card-header">
-        {{ trans('cruds.inventaire.title_singular') }} {{ trans('global.list') }}
-    </div>
 
+@section('content')
+@include('partials.module-overview', [
+    'title' => trans('cruds.inventaire.title'),
+    'create' => ['route' => 'admin.inventaires.create', 'can' => 'inventaire_create', 'label' => 'Nouvelle campagne'],
+])
+
+<div class="card">
+    <div class="card-header">Campagnes d'inventaire</div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Inventaire">
+            <table class="table table-hover datatable datatable-Inventaire">
                 <thead>
                     <tr>
-                        <th width="10">
-
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventaire.fields.id') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventaire.fields.in') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventaire.fields.out') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventaire.fields.balance') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventaire.fields.reference') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.inventaire.fields.nom') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
+                        <th width="10"></th>
+                        <th>Référence</th>
+                        <th>Campagne</th>
+                        <th>Périmètre</th>
+                        <th>Avancement</th>
+                        <th>Écarts</th>
+                        <th>Période</th>
+                        <th>Statut</th>
+                        <th>&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($inventaires as $key => $inventaire)
+                    @foreach($inventaires as $inventaire)
+                        @php($st = $inventaire->stats)
                         <tr data-entry-id="{{ $inventaire->id }}">
-                            <td>
-
+                            <td></td>
+                            <td class="strong nowrap"><a href="{{ route('admin.inventaires.show', $inventaire) }}">{{ $inventaire->reference }}</a></td>
+                            <td class="strong">{{ $inventaire->nom ?: '—' }}</td>
+                            <td class="muted">{{ $inventaire->scope_label }}</td>
+                            <td data-order="{{ $st['progress'] }}">
+                                @if($inventaire->isDraft())
+                                    <span class="muted">Non démarrée</span>
+                                @else
+                                    <div class="read-bar" style="width: 130px"><span style="width: {{ $st['progress'] }}%"></span></div>
+                                    <span class="muted">{{ $st['checked'] }} / {{ $st['expected'] }} · {{ $st['progress'] }} %</span>
+                                @endif
                             </td>
                             <td>
-                                {{ $inventaire->id ?? '' }}
+                                @php($gaps = $st['missing'] + $st['outside'] + $st['damaged'] + $st['moved'])
+                                @if($gaps)
+                                    <span class="pill pill-warning">{{ $gaps }}</span>
+                                @else
+                                    <span class="muted">—</span>
+                                @endif
+                            </td>
+                            <td class="nowrap muted">
+                                {{ $inventaire->starts_at?->format('d/m/Y') ?? '…' }} → {{ $inventaire->ends_at?->format('d/m/Y') ?? '…' }}
                             </td>
                             <td>
-                                {{ $inventaire->in ?? '' }}
+                                <span class="pill pill-{{ ['brouillon' => 'neutral', 'en_cours' => 'info', 'cloture' => 'good'][$inventaire->status] ?? 'neutral' }}">{{ $inventaire->status_label }}</span>
                             </td>
-                            <td>
-                                {{ $inventaire->out ?? '' }}
+                            <td class="nowrap">
+                                <a class="btn btn-xs btn-icon" href="{{ route('admin.inventaires.show', $inventaire) }}" title="Ouvrir" aria-label="Ouvrir"><i class="bi bi-eye"></i></a>
+                                @if($inventaire->isRunning())
+                                    @can('inventaire_edit')
+                                        <a class="btn btn-xs btn-icon" href="{{ route('admin.inventaires.scan', $inventaire) }}" title="Scanner" aria-label="Scanner"><i class="bi bi-qr-code-scan"></i></a>
+                                    @endcan
+                                @endif
+                                @if(! $inventaire->isDraft())
+                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.inventaires.report', $inventaire) }}" target="_blank" title="Procès-verbal" aria-label="Procès-verbal"><i class="bi bi-file-earmark-text"></i></a>
+                                @endif
                             </td>
-                            <td>
-                                {{ $inventaire->balance ?? '' }}
-                            </td>
-                            <td>
-                                {{ $inventaire->reference ?? '' }}
-                            </td>
-                            <td>
-                                {{ $inventaire->nom ?? '' }}
-                            </td>
-                            <td>
-                                @can('inventaire_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.inventaires.show', $inventaire->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
-                                @can('inventaire_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.inventaires.edit', $inventaire->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-
-                                @can('inventaire_delete')
-                                    <form action="{{ route('admin.inventaires.destroy', $inventaire->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
-
-                            </td>
-
                         </tr>
                     @endforeach
                 </tbody>
@@ -99,57 +72,29 @@
         </div>
     </div>
 </div>
-
-
-
 @endsection
+
 @section('scripts')
 @parent
 <script>
-    $(function () {
-  let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
+$(function () {
+    let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('inventaire_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
-  let deleteButton = {
-    text: deleteButtonTrans,
-    url: "{{ route('admin.inventaires.massDestroy') }}",
-    className: 'btn-danger',
-    action: function (e, dt, node, config) {
-      var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
-          return $(entry).data('entry-id')
-      });
-
-      if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
-
-        return
-      }
-
-      if (confirm('{{ trans('global.areYouSure') }}')) {
-        $.ajax({
-          headers: {'x-csrf-token': _token},
-          method: 'POST',
-          url: config.url,
-          data: { ids: ids, _method: 'DELETE' }})
-          .done(function () { location.reload() })
-      }
-    }
-  }
-  dtButtons.push(deleteButton)
+    dtButtons.push({
+        text: '{{ trans('global.datatables.delete') }}',
+        url: "{{ route('admin.inventaires.massDestroy') }}",
+        className: 'btn-danger',
+        action: function (e, dt, node, config) {
+            var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) { return $(entry).data('entry-id') });
+            if (ids.length === 0) { alert('{{ trans('global.datatables.zero_selected') }}'); return }
+            if (confirm('{{ trans('global.areYouSure') }}')) {
+                $.ajax({ headers: {'x-csrf-token': _token}, method: 'POST', url: config.url, data: { ids: ids, _method: 'DELETE' } })
+                    .done(function () { location.reload() })
+            }
+        }
+    })
 @endcan
-
-  $.extend(true, $.fn.dataTable.defaults, {
-    orderCellsTop: true,
-    order: [[ 1, 'desc' ]],
-    pageLength: 100,
-  });
-  let table = $('.datatable-Inventaire:not(.ajaxTable)').DataTable({ buttons: dtButtons })
-  $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
-      $($.fn.dataTable.tables(true)).DataTable()
-          .columns.adjust();
-  });
-  
+    $('.datatable-Inventaire:not(.ajaxTable)').DataTable({ buttons: dtButtons, order: [[1, 'desc']], pageLength: 50 })
 })
-
 </script>
 @endsection

@@ -1,13 +1,11 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
-        {{ trans('global.create') }} {{ trans('cruds.report.title_singular') }}
-    </div>
+@include('partials.form-head', ['module' => 'report', 'mode' => 'create', 'index' => 'admin.reports.index'])
+<div class="card sy-form">
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.reports.store") }}" enctype="multipart/form-data">
+        <form class="sy-form-grid" method="POST" action="{{ route("admin.reports.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label class="required" for="title">{{ trans('cruds.report.fields.title') }}</label>
@@ -48,7 +46,7 @@
                 </div>
                 <select class="form-control select2 {{ $errors->has('projects') ? 'is-invalid' : '' }}" name="projects[]" id="projects" multiple required>
                     @foreach($projects as $id => $project)
-                        <option value="{{ $id }}" {{ in_array($id, old('projects', [])) ? 'selected' : '' }}>{{ $project }}</option>
+                        <option value="{{ $id }}" {{ in_array($id, old('projects', array_filter([(int) request('project')]))) ? 'selected' : '' }}>{{ $project }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('projects'))
@@ -58,10 +56,9 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.report.fields.project_helper') }}</span>
             </div>
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
-                    {{ trans('global.save') }}
-                </button>
+            <div class="sy-form-actions">
+                <a href="{{ route('admin.reports.index') }}" class="btn btn-default">Annuler</a>
+                <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i> {{ trans('global.save') }}</button>
             </div>
         </form>
     </div>

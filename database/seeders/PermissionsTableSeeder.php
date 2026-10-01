@@ -454,6 +454,62 @@ class PermissionsTableSeeder extends Seeder
                 'id'    => 111,
                 'title' => 'profile_password_edit',
             ],
+            [
+                'id'    => 112,
+                'title' => 'agent_access',
+            ],
+            [
+                'id'    => 113,
+                'title' => 'agent_create',
+            ],
+            [
+                'id'    => 114,
+                'title' => 'agent_edit',
+            ],
+            [
+                'id'    => 115,
+                'title' => 'agent_show',
+            ],
+            [
+                'id'    => 116,
+                'title' => 'agent_delete',
+            ],
+            [
+                'id'    => 117,
+                'title' => 'service_access',
+            ],
+            [
+                'id'    => 118,
+                'title' => 'service_create',
+            ],
+            [
+                'id'    => 119,
+                'title' => 'service_edit',
+            ],
+            [
+                'id'    => 120,
+                'title' => 'service_show',
+            ],
+            [
+                'id'    => 121,
+                'title' => 'service_delete',
+            ],
+            [
+                'id'    => 122,
+                'title' => 'contact_message_access',
+            ],
+            [
+                'id'    => 123,
+                'title' => 'contact_message_show',
+            ],
+            [
+                'id'    => 124,
+                'title' => 'contact_message_delete',
+            ],
+            [
+                'id'    => 125,
+                'title' => 'assignment_return',
+            ],
         ];
 
         Permission::insert($permissions);

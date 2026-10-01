@@ -35,6 +35,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'service_id',
         'email_verified_at',
         'password',
         'approved',
@@ -90,6 +91,11 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPassword($token));
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class)->withoutGlobalScope('perimetre')->withTrashed();
     }
 
     public function roles()

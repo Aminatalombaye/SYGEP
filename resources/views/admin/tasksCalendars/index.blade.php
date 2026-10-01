@@ -1,13 +1,21 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
-        {{ trans('cruds.tasksCalendar.title') }}
+<div class="page-head">
+    <div>
+        <h1>{{ trans('cruds.tasksCalendar.title') }}</h1>
+        <p class="sub">Échéances des tâches planifiées.</p>
     </div>
+    <div class="page-actions">
+        @can('task_create')
+            <a href="{{ route('admin.tasks.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouvelle tâche</a>
+        @endcan
+    </div>
+</div>
+<div class="card sy-calendar">
 
     <div class="card-body">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.5/dist/fullcalendar.min.css" />
         <div id="calendar"></div>
 
     </div>
@@ -19,8 +27,8 @@
 
 @section('scripts')
 @parent
-<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.5/dist/fullcalendar.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.5/dist/locale/fr.js'></script>
 <script>
     $(document).ready(function() {
             // page is now ready, initialize the calendar...

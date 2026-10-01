@@ -1,5 +1,11 @@
 @extends('layouts.admin')
 @section('content')
+<div class="page-head">
+    <div>
+        <h1>Mon profil</h1>
+        <p class="sub">Vos informations personnelles et votre mot de passe.</p>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-6">
@@ -30,9 +36,7 @@
                         @endif
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-danger" type="submit">
-                            {{ trans('global.save') }}
-                        </button>
+                        <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i> {{ trans('global.save') }}</button>
                     </div>
                 </form>
             </div>
@@ -48,7 +52,7 @@
                 <form method="POST" action="{{ route("profile.password.update") }}">
                     @csrf
                     <div class="form-group">
-                        <label class="required" for="title">New {{ trans('cruds.user.fields.password') }}</label>
+                        <label class="required" for="title">Nouveau mot de passe</label>
                         <input class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" type="password" name="password" id="password" required>
                         @if($errors->has('password'))
                             <div class="invalid-feedback">
@@ -57,13 +61,11 @@
                         @endif
                     </div>
                     <div class="form-group">
-                        <label class="required" for="title">Repeat New {{ trans('cruds.user.fields.password') }}</label>
+                        <label class="required" for="title">Confirmer le nouveau mot de passe</label>
                         <input class="form-control" type="password" name="password_confirmation" id="password_confirmation" required>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-danger" type="submit">
-                            {{ trans('global.save') }}
-                        </button>
+                        <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i> {{ trans('global.save') }}</button>
                     </div>
                 </form>
             </div>
@@ -81,9 +83,7 @@
                 <form method="POST" action="{{ route("profile.password.destroyProfile") }}" onsubmit="return prompt('{{ __('global.delete_account_warning') }}') == '{{ auth()->user()->email }}'">
                     @csrf
                     <div class="form-group">
-                        <button class="btn btn-danger" type="submit">
-                            {{ trans('global.delete') }}
-                        </button>
+                        <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash3"></i> Supprimer mon compte</button>
                     </div>
                 </form>
             </div>

@@ -1,42 +1,15 @@
-@extends('layouts.app')
-@section('content')
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card mx-4">
-            <div class="card-body p-4">
-                <h1>{{ trans('panel.site_title') }}</h1>
+@extends('layouts.auth')
 
-                <p class="text-muted">{{ trans('global.reset_password') }}</p>
+@section('title', 'Mot de passe oublié')
+@section('icon', 'bi-key')
+@section('heading', 'Mot de passe oublié')
+@section('intro', 'Indiquez votre adresse e-mail : vous recevrez un lien pour choisir un nouveau mot de passe.')
 
-                @if(session('status'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('status') }}
-                    </div>
-                @endif
-
-                <form method="POST" action="{{ route('password.email') }}">
-                    @csrf
-
-                    <div class="form-group">
-                        <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" required autocomplete="email" autofocus placeholder="{{ trans('global.login_email') }}" value="{{ old('email') }}">
-
-                        @if($errors->has('email'))
-                            <div class="invalid-feedback">
-                                {{ $errors->first('email') }}
-                            </div>
-                        @endif
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-flat btn-block">
-                                {{ trans('global.send_password') }}
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+@section('form')
+    <form method="POST" action="{{ route('password.email') }}">
+        @csrf
+        @include('partials.auth.field', ['name' => 'email', 'type' => 'email', 'label' => 'Adresse e-mail', 'icon' => 'bi-envelope', 'autocomplete' => 'email', 'autofocus' => true])
+        <button type="submit" class="btn-primary btn-lg btn-block">Envoyer le lien <i class="bi bi-send" aria-hidden="true"></i></button>
+    </form>
+    <p class="auth-links"><a href="{{ route('login') }}"><i class="bi bi-arrow-left"></i> Retour à la connexion</a></p>
 @endsection

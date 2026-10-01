@@ -66,9 +66,7 @@
                             </td>
                             <td>
                                 @can('user_alert_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.user-alerts.show', $userAlert->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
+                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.user-alerts.show', $userAlert->id) }}" title="Voir" aria-label="Voir"><i class="bi bi-eye"></i></a>
                                 @endcan
 
 
@@ -76,7 +74,7 @@
                                     <form action="{{ route('admin.user-alerts.destroy', $userAlert->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        <button type="submit" class="btn btn-xs btn-icon btn-icon-danger" title="Supprimer" aria-label="Supprimer"><i class="bi bi-trash3"></i></button>
                                     </form>
                                 @endcan
 

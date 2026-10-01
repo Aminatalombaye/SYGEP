@@ -1,19 +1,15 @@
 @extends('layouts.admin')
 @section('content')
 
+@include('partials.show-head', ['module' => 'service', 'index' => 'admin.services.index', 'record' => $service, 'edit' => ['route' => 'admin.services.edit', 'can' => 'service_edit']])
 <div class="card">
     <div class="card-header">
-        {{ trans('global.show') }} {{ trans('cruds.service.title') }}
+        Détails
     </div>
 
     <div class="card-body">
         <div class="form-group">
-            <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.services.index') }}">
-                    {{ trans('global.back_to_list') }}
-                </a>
-            </div>
-            <table class="table table-bordered table-striped">
+            <table class="table sy-details">
                 <tbody>
                     <tr>
                         <th>
@@ -33,11 +29,6 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.services.index') }}">
-                    {{ trans('global.back_to_list') }}
-                </a>
-            </div>
         </div>
     </div>
 </div>

@@ -1,98 +1,66 @@
 @extends('layouts.admin')
+
 @section('content')
-
-<div class="card">
-    <div class="card-header">
-        {{ trans('global.edit') }} {{ trans('cruds.assignment.title_singular') }}
-    </div>
-
-    <div class="card-body">
-        <form method="POST" action="{{ route("admin.assignments.update", [$assignment->id]) }}" enctype="multipart/form-data">
-            @method('PUT')
-            @csrf
-            <div class="form-group">
-                <label for="quantity">{{ trans('cruds.assignment.fields.quantity') }}</label>
-                <input class="form-control {{ $errors->has('quantity') ? 'is-invalid' : '' }}" type="text" name="quantity" id="quantity" value="{{ old('quantity', $assignment->quantity) }}">
-                @if($errors->has('quantity'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('quantity') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.assignment.fields.quantity_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="matieres">{{ trans('cruds.assignment.fields.matiere') }}</label>
-                <div style="padding-bottom: 4px">
-                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
-                </div>
-                <select class="form-control select2 {{ $errors->has('matieres') ? 'is-invalid' : '' }}" name="matieres[]" id="matieres" multiple>
-                    @foreach($matieres as $id => $matiere)
-                        <option value="{{ $id }}" {{ (in_array($id, old('matieres', [])) || $assignment->matieres->contains($id)) ? 'selected' : '' }}>{{ $matiere }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('matieres'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('matieres') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.assignment.fields.matiere_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="atributions">{{ trans('cruds.assignment.fields.atribution') }}</label>
-                <div style="padding-bottom: 4px">
-                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
-                </div>
-                <select class="form-control select2 {{ $errors->has('atributions') ? 'is-invalid' : '' }}" name="atributions[]" id="atributions" multiple>
-                    @foreach($atributions as $id => $atribution)
-                        <option value="{{ $id }}" {{ (in_array($id, old('atributions', [])) || $assignment->atributions->contains($id)) ? 'selected' : '' }}>{{ $atribution }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('atributions'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('atributions') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.assignment.fields.atribution_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="utilisateur">{{ trans('cruds.assignment.fields.utilisateur') }}</label>
-                <input class="form-control {{ $errors->has('utilisateur') ? 'is-invalid' : '' }}" type="text" name="utilisateur" id="utilisateur" value="{{ old('utilisateur', $assignment->utilisateur) }}">
-                @if($errors->has('utilisateur'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('utilisateur') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.assignment.fields.utilisateur_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="atributions">{{ trans('cruds.assignment.fields.service') }}</label>
-                <div style="padding-bottom: 4px">
-                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
-                </div>
-                <select class="form-control select2 {{ $errors->has('service') ? 'is-invalid' : '' }}" name="service[]" id="services" multiple>
-                    @foreach($services as $id => $service)
-                        <option value="{{ $id }}" {{ (in_array($id, old('services', [])) || $assignment->atributions->contains($id)) ? 'selected' : '' }}>{{ $service }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('services'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('services') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.assignment.fields.service_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
-                    {{ trans('global.save') }}
-                </button>
-            </div>
-        </form>
+<div class="page-head">
+    <div>
+        <div class="crumb">
+            <a href="{{ route('admin.assignments.index') }}">Affectations</a> ›
+            <a href="{{ route('admin.assignments.show', $assignment) }}">{{ $assignment->reference }}</a> › Modifier
+        </div>
+        <h1>Modifier le bon {{ $assignment->reference }}</h1>
+        <p class="sub">
+            Bénéficiaire : {{ $assignment->beneficiary }}.
+            Pour changer de bénéficiaire, restituez ou transférez le matériel.
+        </p>
     </div>
 </div>
 
+<form method="POST" action="{{ route('admin.assignments.update', $assignment) }}">
+    @csrf
+    @method('PUT')
+    <section class="sy-card" style="max-width: 820px; margin-left: auto; margin-right: auto">
+        <div class="sy-card-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="assigned_at" class="required">Date d'affectation</label>
+                    <input type="date" name="assigned_at" id="assigned_at" class="form-control {{ $errors->has('assigned_at') ? 'is-invalid' : '' }}"
+                           value="{{ old('assigned_at', $assignment->assigned_at?->toDateString()) }}" required>
+                    @error('assigned_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="form-group">
+                    <label for="expected_return_at">Retour prévu</label>
+                    <input type="date" name="expected_return_at" id="expected_return_at" class="form-control {{ $errors->has('expected_return_at') ? 'is-invalid' : '' }}"
+                           value="{{ old('expected_return_at', $assignment->expected_return_at?->toDateString()) }}">
+                    @error('expected_return_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="form-group">
+                    <label for="location_id">Emplacement</label>
+                    <select name="location_id" id="location_id" class="form-control select2">
+                        <option value="">—</option>
+                        @foreach($locations as $id => $name)
+                            <option value="{{ $id }}" @selected((int) old('location_id', $assignment->location_id) === $id)>{{ $name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="type">Type d'affectation</label>
+                    <select name="type" id="type" class="form-control">
+                        @foreach($types as $key => $label)
+                            <option value="{{ $key }}" @selected(old('type', $assignment->type) === $key)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group full">
+                    <label for="notes">Motif / observations</label>
+                    <textarea name="notes" id="notes" rows="4" class="form-control" style="min-height:0">{{ old('notes', $assignment->notes) }}</textarea>
+                </div>
+            </div>
+        </div>
+    </section>
 
-
+    <div class="page-actions" style="max-width: 820px; margin: 0 auto; justify-content:flex-end">
+        <a href="{{ route('admin.assignments.show', $assignment) }}" class="btn btn-default">Annuler</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> Enregistrer</button>
+    </div>
+</form>
 @endsection

@@ -1,13 +1,11 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
-        {{ trans('global.edit') }} {{ trans('cruds.asset.title_singular') }}
-    </div>
+@include('partials.form-head', ['module' => 'asset', 'mode' => 'edit', 'index' => 'admin.assets.index', 'record' => $asset])
+<div class="card sy-form">
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.assets.update", [$asset->id]) }}" enctype="multipart/form-data">
+        <form class="sy-form-grid" method="POST" action="{{ route("admin.assets.update", [$asset->id]) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf
             <div class="form-group">
@@ -179,28 +177,9 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.asset.fields.assigned_to_helper') }}</span>
             </div>
-            <div class="form-group">
-                <label for="inventaire_codes">{{ trans('cruds.asset.fields.inventaire_code') }}</label>
-                <div style="padding-bottom: 4px">
-                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
-                </div>
-                <select class="form-control select2 {{ $errors->has('inventaire_codes') ? 'is-invalid' : '' }}" name="inventaire_codes[]" id="inventaire_codes" multiple>
-                    @foreach($inventaire_codes as $id => $inventaire_code)
-                        <option value="{{ $id }}" {{ (in_array($id, old('inventaire_codes', [])) || $asset->inventaire_codes->contains($id)) ? 'selected' : '' }}>{{ $inventaire_code }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('inventaire_codes'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('inventaire_codes') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.asset.fields.inventaire_code_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
-                    {{ trans('global.save') }}
-                </button>
+            <div class="sy-form-actions">
+                <a href="{{ route('admin.assets.index') }}" class="btn btn-default">Annuler</a>
+                <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i> {{ trans('global.save') }}</button>
             </div>
         </form>
     </div>

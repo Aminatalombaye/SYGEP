@@ -1,50 +1,17 @@
-@extends('layouts.app')
-@section('content')
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card mx-4">
-            <div class="card-body p-4">
-                <h1>{{ trans('panel.site_title') }}</h1>
+@extends('layouts.auth')
 
-                <p class="text-muted">{{ trans('global.reset_password') }}</p>
+@section('title', 'Nouveau mot de passe')
+@section('icon', 'bi-shield-lock')
+@section('heading', 'Nouveau mot de passe')
+@section('intro', 'Choisissez un mot de passe d\'au moins 8 caractères.')
 
-                <form method="POST" action="{{ route('password.request') }}">
-                    @csrf
-
-                    <input name="token" value="{{ $token }}" type="hidden">
-
-                    <div class="form-group">
-                        <input id="email" type="email" name="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" required autocomplete="email" autofocus placeholder="{{ trans('global.login_email') }}" value="{{ $email ?? old('email') }}">
-
-                        @if($errors->has('email'))
-                            <div class="invalid-feedback">
-                                {{ $errors->first('email') }}
-                            </div>
-                        @endif
-                    </div>
-                    <div class="form-group">
-                        <input id="password" type="password" name="password" class="form-control" required placeholder="{{ trans('global.login_password') }}">
-
-                        @if($errors->has('password'))
-                            <div class="invalid-feedback">
-                                {{ $errors->first('password') }}
-                            </div>
-                        @endif
-                    </div>
-                    <div class="form-group">
-                        <input id="password-confirm" type="password" name="password_confirmation" class="form-control" required placeholder="{{ trans('global.login_password_confirmation') }}">
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-block btn-flat">
-                                {{ trans('global.reset_password') }}
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+@section('form')
+    <form method="POST" action="{{ route('password.update') }}">
+        @csrf
+        <input type="hidden" name="token" value="{{ $token }}">
+        @include('partials.auth.field', ['name' => 'email', 'type' => 'email', 'label' => 'Adresse e-mail', 'icon' => 'bi-envelope', 'value' => $email ?? request('email'), 'autocomplete' => 'email'])
+        @include('partials.auth.field', ['name' => 'password', 'type' => 'password', 'label' => 'Nouveau mot de passe', 'icon' => 'bi-lock', 'autocomplete' => 'new-password', 'autofocus' => true])
+        @include('partials.auth.field', ['name' => 'password_confirmation', 'id' => 'password-confirm', 'type' => 'password', 'label' => 'Confirmer le mot de passe', 'icon' => 'bi-lock-fill', 'autocomplete' => 'new-password'])
+        <button type="submit" class="btn-primary btn-lg btn-block">Enregistrer le mot de passe <i class="bi bi-check2" aria-hidden="true"></i></button>
+    </form>
 @endsection

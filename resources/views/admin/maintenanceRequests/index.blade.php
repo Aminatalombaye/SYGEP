@@ -1,93 +1,92 @@
 @extends('layouts.admin')
-@section('content')
-@can('maintenance_request_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.maintenance-requests.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.maintenanceRequest.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
-<div class="card">
-    <div class="card-header">
-        {{ trans('cruds.maintenanceRequest.title_singular') }} {{ trans('global.list') }}
-    </div>
 
-    <div class="card-body">
+@section('content')
+@php
+    $tabs = [
+        'a_valider' => 'En attente de décision',
+        'ouvertes'  => 'En cours de traitement',
+        'terminee'  => 'Terminées',
+        'rejetee'   => 'Rejetées',
+        'toutes'    => 'Toutes',
+    ];
+@endphp
+
+<div class="page-head">
+    <div>
+        <h1>{{ trans('cruds.maintenanceRequest.title') }}</h1>
+        <p class="sub">Demandes d'intervention : soumission, validation, planification et clôture.</p>
+    </div>
+    <div class="page-actions">
+        @can('maintenance_plan_access')
+            <a href="{{ route('admin.maintenance-plans.index') }}" class="btn btn-default"><i class="bi bi-arrow-repeat"></i> Maintenance préventive</a>
+        @endcan
+        @can('maintenance_request_create')
+            <a href="{{ route('admin.maintenance-requests.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouvelle demande</a>
+        @endcan
+    </div>
+</div>
+
+@include('partials.module-overview', ['head' => false])
+
+<nav class="sy-tabs">
+    @foreach($tabs as $key => $label)
+        <a href="{{ route('admin.maintenance-requests.index', ['statut' => $key]) }}" @class(['active' => $filter === $key])>
+            {{ $label }}<span class="count">{{ $counts[$key] }}</span>
+        </a>
+    @endforeach
+</nav>
+
+<div class="sy-card">
+    <div class="sy-card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-MaintenanceRequest">
+            <table class="table table-hover datatable datatable-MaintenanceRequest">
                 <thead>
                     <tr>
-                        <th width="10">
-
-                        </th>
-                        <th>
-                            {{ trans('cruds.maintenanceRequest.fields.id') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.maintenanceRequest.fields.description') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.maintenanceRequest.fields.status') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.maintenanceRequest.fields.created_by') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.maintenanceRequest.fields.request') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
+                        <th width="10"></th>
+                        <th>Référence</th>
+                        <th>Objet</th>
+                        <th>Concerne</th>
+                        <th>Priorité</th>
+                        <th>Demandeur</th>
+                        <th>Intervention</th>
+                        <th>Statut</th>
+                        <th>&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($maintenanceRequests as $key => $maintenanceRequest)
-                        <tr data-entry-id="{{ $maintenanceRequest->id }}">
-                            <td>
-
+                    @foreach($requests as $req)
+                        <tr data-entry-id="{{ $req->id }}">
+                            <td></td>
+                            <td class="strong nowrap" data-order="{{ $req->id }}">
+                                <a href="{{ route('admin.maintenance-requests.show', $req) }}">{{ $req->reference ?: '#'.$req->id }}</a>
+                                <div class="muted">{{ $req->created_at?->format('d/m/Y') }}</div>
                             </td>
-                            <td>
-                                {{ $maintenanceRequest->id ?? '' }}
+                            <td class="strong">
+                                {{ $req->title ?: \Illuminate\Support\Str::limit($req->description, 60) }}
+                                <div class="muted">{{ $req->kind_label }}</div>
                             </td>
-                            <td>
-                                {{ $maintenanceRequest->description ?? '' }}
+                            <td class="muted">{{ $req->target_label }}</td>
+                            <td data-order="{{ array_search($req->priority, array_keys(\App\Models\MaintenanceRequest::PRIORITIES)) }}">
+                                <span class="pill pill-{{ $req->priority_tone }}">{{ $req->priority_label }}</span>
                             </td>
-                            <td>
-                                {{ $maintenanceRequest->status ?? '' }}
+                            <td class="muted">{{ $req->requester_name }}@if($req->establishment)<div>{{ $req->establishment }}</div>@endif</td>
+                            <td class="nowrap">
+                                @if($req->planned_for)
+                                    {{ $req->planned_for->format('d/m/Y') }}
+                                    @if($req->assignedTo)<div class="muted">{{ $req->assignedTo->name }}</div>@endif
+                                @else
+                                    <span class="muted">—</span>
+                                @endif
                             </td>
-                            <td>
-                                {{ $maintenanceRequest->created_by ?? '' }}
-                            </td>
-                            <td>
-                                @foreach($maintenanceRequest->requests as $key => $item)
-                                    <span class="badge badge-info">{{ $item->name }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                @can('maintenance_request_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.maintenance-requests.show', $maintenanceRequest->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
+                            <td><span class="pill pill-{{ $req->status_tone }}">{{ $req->status_label }}</span></td>
+                            <td class="nowrap">
+                                <a class="btn btn-xs btn-icon" href="{{ route('admin.maintenance-requests.show', $req) }}" title="Ouvrir" aria-label="Ouvrir"><i class="bi bi-eye"></i></a>
                                 @can('maintenance_request_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.maintenance-requests.edit', $maintenanceRequest->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
+                                    @if($req->isOpen())
+                                        <a class="btn btn-xs btn-icon" href="{{ route('admin.maintenance-requests.edit', $req) }}" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
+                                    @endif
                                 @endcan
-
-                                @can('maintenance_request_delete')
-                                    <form action="{{ route('admin.maintenance-requests.destroy', $maintenanceRequest->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
-
                             </td>
-
                         </tr>
                     @endforeach
                 </tbody>
@@ -95,57 +94,29 @@
         </div>
     </div>
 </div>
-
-
-
 @endsection
+
 @section('scripts')
 @parent
 <script>
-    $(function () {
-  let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
+$(function () {
+    let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('maintenance_request_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
-  let deleteButton = {
-    text: deleteButtonTrans,
-    url: "{{ route('admin.maintenance-requests.massDestroy') }}",
-    className: 'btn-danger',
-    action: function (e, dt, node, config) {
-      var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
-          return $(entry).data('entry-id')
-      });
-
-      if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
-
-        return
-      }
-
-      if (confirm('{{ trans('global.areYouSure') }}')) {
-        $.ajax({
-          headers: {'x-csrf-token': _token},
-          method: 'POST',
-          url: config.url,
-          data: { ids: ids, _method: 'DELETE' }})
-          .done(function () { location.reload() })
-      }
-    }
-  }
-  dtButtons.push(deleteButton)
+    dtButtons.push({
+        text: '{{ trans('global.datatables.delete') }}',
+        url: "{{ route('admin.maintenance-requests.massDestroy') }}",
+        className: 'btn-danger',
+        action: function (e, dt, node, config) {
+            var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) { return $(entry).data('entry-id') });
+            if (ids.length === 0) { alert('{{ trans('global.datatables.zero_selected') }}'); return }
+            if (confirm('{{ trans('global.areYouSure') }}')) {
+                $.ajax({ headers: {'x-csrf-token': _token}, method: 'POST', url: config.url, data: { ids: ids, _method: 'DELETE' } })
+                    .done(function () { location.reload() })
+            }
+        }
+    })
 @endcan
-
-  $.extend(true, $.fn.dataTable.defaults, {
-    orderCellsTop: true,
-    order: [[ 1, 'desc' ]],
-    pageLength: 100,
-  });
-  let table = $('.datatable-MaintenanceRequest:not(.ajaxTable)').DataTable({ buttons: dtButtons })
-  $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
-      $($.fn.dataTable.tables(true)).DataTable()
-          .columns.adjust();
-  });
-  
+    $('.datatable-MaintenanceRequest:not(.ajaxTable)').DataTable({ buttons: dtButtons, order: [[1, 'desc']], pageLength: 50 })
 })
-
 </script>
 @endsection

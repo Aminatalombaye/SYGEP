@@ -1,78 +1,18 @@
-@extends('layouts.app')
-@section('content')
+@extends('layouts.auth')
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
+@section('title', 'Créer un compte')
+@section('icon', 'bi-person-plus')
+@section('heading', 'Créer un compte')
+@section('intro', 'Votre compte devra être validé par un administrateur avant la première connexion.')
 
-        <div class="card mx-4">
-            <div class="card-body p-4">
-
-                <form method="POST" action="{{ route('register') }}">
-                    {{ csrf_field() }}
-
-                    <h1>{{ trans('panel.site_title') }}</h1>
-                    <p class="text-muted">{{ trans('global.register') }}</p>
-
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fa fa-user fa-fw"></i>
-                            </span>
-                        </div>
-                        <input type="text" name="name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" required autofocus placeholder="{{ trans('global.user_name') }}" value="{{ old('name', null) }}">
-                        @if($errors->has('name'))
-                            <div class="invalid-feedback">
-                                {{ $errors->first('name') }}
-                            </div>
-                        @endif
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fa fa-envelope fa-fw"></i>
-                            </span>
-                        </div>
-                        <input type="email" name="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" required placeholder="{{ trans('global.login_email') }}" value="{{ old('email', null) }}">
-                        @if($errors->has('email'))
-                            <div class="invalid-feedback">
-                                {{ $errors->first('email') }}
-                            </div>
-                        @endif
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fa fa-lock fa-fw"></i>
-                            </span>
-                        </div>
-                        <input type="password" name="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" required placeholder="{{ trans('global.login_password') }}">
-                        @if($errors->has('password'))
-                            <div class="invalid-feedback">
-                                {{ $errors->first('password') }}
-                            </div>
-                        @endif
-                    </div>
-
-                    <div class="input-group mb-4">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fa fa-lock fa-fw"></i>
-                            </span>
-                        </div>
-                        <input type="password" name="password_confirmation" class="form-control" required placeholder="{{ trans('global.login_password_confirmation') }}">
-                    </div>
-
-                    <button class="btn btn-block btn-primary">
-                        {{ trans('global.register') }}
-                    </button>
-                </form>
-
-            </div>
-        </div>
-
-    </div>
-</div>
-
+@section('form')
+    <form method="POST" action="{{ route('register') }}">
+        @csrf
+        @include('partials.auth.field', ['name' => 'name', 'label' => 'Nom complet', 'icon' => 'bi-person', 'autocomplete' => 'name', 'autofocus' => true])
+        @include('partials.auth.field', ['name' => 'email', 'type' => 'email', 'label' => 'Adresse e-mail', 'icon' => 'bi-envelope', 'autocomplete' => 'email'])
+        @include('partials.auth.field', ['name' => 'password', 'type' => 'password', 'label' => 'Mot de passe', 'icon' => 'bi-lock', 'autocomplete' => 'new-password'])
+        @include('partials.auth.field', ['name' => 'password_confirmation', 'type' => 'password', 'label' => 'Confirmer le mot de passe', 'icon' => 'bi-lock-fill', 'autocomplete' => 'new-password'])
+        <button type="submit" class="btn-primary btn-lg btn-block">Créer mon compte <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
+    </form>
+    <p class="auth-links">Déjà inscrit ? <a href="{{ route('login') }}">Se connecter</a></p>
 @endsection

@@ -1,17 +1,12 @@
 @extends('layouts.admin')
 @section('content')
-@can('asset_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.assets.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.asset.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
+@include('partials.module-overview', [
+    'title' => trans('cruds.asset.title'),
+    'create' => ['route' => 'admin.assets.create', 'can' => 'asset_create', 'label' => trans('global.add').' '.trans('cruds.asset.title_singular')],
+])
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.asset.title_singular') }} {{ trans('global.list') }}
+        Liste
     </div>
 
     <div class="card-body">
@@ -65,7 +60,7 @@
                             {{ trans('cruds.asset.fields.bon') }}
                         </th>
                         <th>
-                            {{ trans('cruds.asset.fields.assigned_to') }}
+                            Détenteur
                         </th>
                         <th>
                             {{ trans('cruds.asset.fields.inventaire_code') }}
@@ -101,7 +96,7 @@
                                 @endforeach
                             </td>
                             <td>
-                                {{ $asset->status->name ?? '' }}
+                                @if($asset->status)<span class="pill pill-{{ $asset->status->tone }}">{{ $asset->status->label }}</span>@endif
                             </td>
                             <td>
                                 {{ $asset->location->name ?? '' }}
@@ -132,7 +127,13 @@
                                 @endforeach
                             </td>
                             <td>
-                                {{ $asset->assigned_to ?? '' }}
+                                @if($asset->agent)
+                                    <a href="{{ route('admin.agents.show', $asset->agent) }}">{{ $asset->agent->full_name }}</a>
+                                @elseif($asset->service)
+                                    {{ $asset->service->name }}
+                                @else
+                                    {{ $asset->assigned_to ?? '' }}
+                                @endif
                             </td>
                             <td>
                                 @foreach($asset->inventaire_codes as $key => $item)
@@ -141,22 +142,18 @@
                             </td>
                             <td>
                                 @can('asset_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.assets.show', $asset->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
+                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.assets.show', $asset->id) }}" title="Voir" aria-label="Voir"><i class="bi bi-eye"></i></a>
                                 @endcan
 
                                 @can('asset_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.assets.edit', $asset->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
+                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.assets.edit', $asset->id) }}" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
                                 @endcan
 
                                 @can('asset_delete')
                                     <form action="{{ route('admin.assets.destroy', $asset->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        <button type="submit" class="btn btn-xs btn-icon btn-icon-danger" title="Supprimer" aria-label="Supprimer"><i class="bi bi-trash3"></i></button>
                                     </form>
                                 @endcan
 

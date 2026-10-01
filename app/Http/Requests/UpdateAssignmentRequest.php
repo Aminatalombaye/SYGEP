@@ -2,41 +2,31 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Assignment;
-use Gate;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class UpdateAssignmentRequest extends FormRequest
 {
-    public function authorize()
+    public function authorize(): bool
     {
         return Gate::allows('assignment_edit');
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
-            'quantity' => [
-                'string',
-                'nullable',
-            ],
-            'matieres.*' => [
-                'integer',
-            ],
-            'matieres' => [
-                'array',
-            ],
-            'atributions.*' => [
-                'integer',
-            ],
-            'atributions' => [
-                'array',
-            ],
-            'utilisateur' => [
-                'string',
-                'nullable',
-            ],
+            'location_id'        => ['nullable', 'integer', 'exists:asset_locations,id'],
+            'type'               => ['nullable', 'string', 'in:'.implode(',', array_keys(\App\Models\Assignment::TYPES))],
+            'assigned_at'        => ['required', 'date'],
+            'expected_return_at' => ['nullable', 'date', 'after_or_equal:assigned_at'],
+            'notes'              => ['nullable', 'string', 'max:2000'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'expected_return_at.after_or_equal' => 'La date de retour prévue doit suivre la date d\'affectation.',
         ];
     }
 }

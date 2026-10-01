@@ -1,19 +1,16 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
-        {{ trans('global.edit') }} {{ trans('cruds.assetsHistory.title_singular') }}
-    </div>
+@include('partials.form-head', ['module' => 'assetsHistory', 'mode' => 'edit', 'index' => 'admin.assets-histories.index', 'record' => $assetsHistory])
+<div class="card sy-form">
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.assets-histories.update", [$assetsHistory->id]) }}" enctype="multipart/form-data">
+        <form class="sy-form-grid" method="POST" action="{{ route("admin.assets-histories.update", [$assetsHistory->id]) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
-                    {{ trans('global.save') }}
-                </button>
+            <div class="sy-form-actions">
+                <a href="{{ route('admin.assets-histories.index') }}" class="btn btn-default">Annuler</a>
+                <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i> {{ trans('global.save') }}</button>
             </div>
         </form>
     </div>

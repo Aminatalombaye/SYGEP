@@ -1,19 +1,15 @@
 @extends('layouts.admin')
 @section('content')
 
+@include('partials.show-head', ['module' => 'user', 'index' => 'admin.users.index', 'record' => $user, 'edit' => ['route' => 'admin.users.edit', 'can' => 'user_edit']])
 <div class="card">
     <div class="card-header">
-        {{ trans('global.show') }} {{ trans('cruds.user.title') }}
+        Détails
     </div>
 
     <div class="card-body">
         <div class="form-group">
-            <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.users.index') }}">
-                    {{ trans('global.back_to_list') }}
-                </a>
-            </div>
-            <table class="table table-bordered table-striped">
+            <table class="table sy-details">
                 <tbody>
                     <tr>
                         <th>
@@ -63,15 +59,11 @@
                             @foreach($user->roles as $key => $roles)
                                 <span class="label label-info">{{ $roles->title }}</span>
                             @endforeach
+                            <div class="muted">Périmètre : {{ $user->service->name ?? 'tous les services' }}</div>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.users.index') }}">
-                    {{ trans('global.back_to_list') }}
-                </a>
-            </div>
         </div>
     </div>
 </div>

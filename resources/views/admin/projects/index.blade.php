@@ -1,113 +1,89 @@
 @extends('layouts.admin')
-@section('content')
-@can('project_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.projects.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.project.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
-<div class="card">
-    <div class="card-header">
-        {{ trans('cruds.project.title_singular') }} {{ trans('global.list') }}
-    </div>
 
-    <div class="card-body">
+@section('content')
+@php
+    $tabs = [
+        'actifs'    => 'En cours et planifiés',
+        'en_retard' => 'En retard',
+        'termine'   => 'Terminés',
+        'tous'      => 'Tous',
+    ];
+@endphp
+
+<div class="page-head">
+    <div>
+        <h1>{{ trans('cruds.project.title') }}</h1>
+        <p class="sub">Construction et réhabilitation des structures : avancement, budget et échéances.</p>
+    </div>
+    <div class="page-actions">
+        @can('intervenant_access')
+            <a href="{{ route('admin.intervenants.index') }}" class="btn btn-default"><i class="bi bi-people"></i> Intervenants</a>
+        @endcan
+        @can('project_create')
+            <a href="{{ route('admin.projects.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouveau projet</a>
+        @endcan
+    </div>
+</div>
+
+@include('partials.module-overview', ['head' => false])
+
+<nav class="sy-tabs">
+    @foreach($tabs as $key => $label)
+        <a href="{{ route('admin.projects.index', ['statut' => $key]) }}" @class(['active' => $filter === $key])>
+            {{ $label }}<span class="count">{{ $counts[$key] }}</span>
+        </a>
+    @endforeach
+</nav>
+
+<div class="sy-card">
+    <div class="sy-card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Project">
+            <table class="table table-hover datatable datatable-Project">
                 <thead>
                     <tr>
-                        <th width="10">
-
-                        </th>
-                        <th>
-                            {{ trans('cruds.project.fields.id') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.project.fields.name') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.project.fields.description') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.project.fields.start_date') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.project.fields.end_date') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.project.fields.status') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.project.fields.infrastructure') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.project.fields.chef_projet') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
+                        <th width="10"></th>
+                        <th>Référence</th>
+                        <th>Projet</th>
+                        <th>Infrastructure(s)</th>
+                        <th>Avancement</th>
+                        <th>Budget</th>
+                        <th>Échéance</th>
+                        <th>Statut</th>
+                        <th>&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($projects as $key => $project)
+                    @foreach($projects as $project)
                         <tr data-entry-id="{{ $project->id }}">
-                            <td>
-
+                            <td></td>
+                            <td class="strong nowrap"><a href="{{ route('admin.projects.show', $project) }}">{{ $project->reference ?: '#'.$project->id }}</a></td>
+                            <td class="strong">
+                                {{ $project->name }}
+                                <div class="muted">{{ $project->type_label }}@if($project->chef_projets->isNotEmpty()) · {{ $project->chef_projets->map(fn ($c) => trim($c->prenom.' '.$c->nom))->implode(', ') }}@endif</div>
                             </td>
-                            <td>
-                                {{ $project->id ?? '' }}
+                            <td class="muted">{{ $project->infrastructures->pluck('name')->implode(', ') ?: '—' }}</td>
+                            <td data-order="{{ $project->progress }}">
+                                <div class="read-bar" style="width: 130px"><span style="width: {{ $project->progress }}%"></span></div>
+                                <span class="muted">
+                                    {{ $project->progress }} %
+                                    @if($project->milestones_count) · {{ $project->milestones_done_count }}/{{ $project->milestones_count }} jalons @endif
+                                </span>
                             </td>
-                            <td>
-                                {{ $project->name ?? '' }}
+                            <td class="nowrap" data-order="{{ (float) $project->budget }}">
+                                {{ \App\Support\Fmt::money($project->budget) }}
+                                @if($project->budget_rate !== null)<div class="muted">{{ $project->budget_rate }} % engagé</div>@endif
                             </td>
-                            <td>
-                                {{ $project->description ?? '' }}
+                            <td class="nowrap" data-order="{{ $project->end_date?->toDateString() }}">
+                                {{ $project->end_date?->format('d/m/Y') ?? '—' }}
+                                @if($project->is_late)<div><span class="pill pill-critical">En retard</span></div>@endif
                             </td>
-                            <td>
-                                {{ $project->start_date ?? '' }}
-                            </td>
-                            <td>
-                                {{ $project->end_date ?? '' }}
-                            </td>
-                            <td>
-                                {{ $project->status ?? '' }}
-                            </td>
-                            <td>
-                                @foreach($project->infrastructures as $key => $item)
-                                    <span class="badge badge-info">{{ $item->name }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                @foreach($project->chef_projets as $key => $item)
-                                    <span class="badge badge-info">{{ $item->nom }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                @can('project_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.projects.show', $project->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
+                            <td><span class="pill pill-{{ \App\Models\Project::STATUS_TONES[$project->status] ?? 'neutral' }}">{{ $project->status_label }}</span></td>
+                            <td class="nowrap">
+                                <a class="btn btn-xs btn-icon" href="{{ route('admin.projects.show', $project) }}" title="Ouvrir" aria-label="Ouvrir"><i class="bi bi-eye"></i></a>
                                 @can('project_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.projects.edit', $project->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
+                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.projects.edit', $project) }}" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
                                 @endcan
-
-                                @can('project_delete')
-                                    <form action="{{ route('admin.projects.destroy', $project->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
-
                             </td>
-
                         </tr>
                     @endforeach
                 </tbody>
@@ -115,57 +91,29 @@
         </div>
     </div>
 </div>
-
-
-
 @endsection
+
 @section('scripts')
 @parent
 <script>
-    $(function () {
-  let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
+$(function () {
+    let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('project_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
-  let deleteButton = {
-    text: deleteButtonTrans,
-    url: "{{ route('admin.projects.massDestroy') }}",
-    className: 'btn-danger',
-    action: function (e, dt, node, config) {
-      var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
-          return $(entry).data('entry-id')
-      });
-
-      if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
-
-        return
-      }
-
-      if (confirm('{{ trans('global.areYouSure') }}')) {
-        $.ajax({
-          headers: {'x-csrf-token': _token},
-          method: 'POST',
-          url: config.url,
-          data: { ids: ids, _method: 'DELETE' }})
-          .done(function () { location.reload() })
-      }
-    }
-  }
-  dtButtons.push(deleteButton)
+    dtButtons.push({
+        text: '{{ trans('global.datatables.delete') }}',
+        url: "{{ route('admin.projects.massDestroy') }}",
+        className: 'btn-danger',
+        action: function (e, dt, node, config) {
+            var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) { return $(entry).data('entry-id') });
+            if (ids.length === 0) { alert('{{ trans('global.datatables.zero_selected') }}'); return }
+            if (confirm('{{ trans('global.areYouSure') }}')) {
+                $.ajax({ headers: {'x-csrf-token': _token}, method: 'POST', url: config.url, data: { ids: ids, _method: 'DELETE' } })
+                    .done(function () { location.reload() })
+            }
+        }
+    })
 @endcan
-
-  $.extend(true, $.fn.dataTable.defaults, {
-    orderCellsTop: true,
-    order: [[ 1, 'desc' ]],
-    pageLength: 100,
-  });
-  let table = $('.datatable-Project:not(.ajaxTable)').DataTable({ buttons: dtButtons })
-  $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
-      $($.fn.dataTable.tables(true)).DataTable()
-          .columns.adjust();
-  });
-  
+    $('.datatable-Project:not(.ajaxTable)').DataTable({ buttons: dtButtons, order: [[6, 'asc']], pageLength: 50 })
 })
-
 </script>
 @endsection

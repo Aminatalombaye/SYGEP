@@ -1,96 +1,60 @@
 @extends('layouts.admin')
 
 @section('content')
-
-<div class="card">
-    <div class="card-header">
-        {{ trans('global.create') }} {{ trans('cruds.assignment.title_singular') }}
-    </div>
-
-    <div class="card-body">
-        <form method="POST" action="{{ route('admin.assignments.store') }}" enctype="multipart/form-data">
-            @csrf
-            <div class="form-group">
-                <label for="quantity">{{ trans('cruds.assignment.fields.quantity') }}</label>
-                <input class="form-control {{ $errors->has('quantity') ? 'is-invalid' : '' }}" type="text" name="quantity" id="quantity" value="{{ old('quantity', '') }}">
-                @if($errors->has('quantity'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('quantity') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.assignment.fields.quantity_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="matieres">{{ trans('cruds.assignment.fields.matiere') }}</label>
-                <div style="padding-bottom: 4px">
-                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
-                </div>
-                <select class="form-control select2 {{ $errors->has('matieres') ? 'is-invalid' : '' }}" name="matieres[]" id="matieres" multiple>
-                    @foreach($matieres as $id => $matiere)
-                        <option value="{{ $id }}" {{ in_array($id, old('matieres', [])) ? 'selected' : '' }}>{{ $matiere }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('matieres'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('matieres') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.assignment.fields.matiere_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="atributions">{{ trans('cruds.assignment.fields.atribution') }}</label>
-                <div style="padding-bottom: 4px">
-                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
-                </div>
-                <select class="form-control select2 {{ $errors->has('atributions') ? 'is-invalid' : '' }}" name="atributions[]" id="atributions" multiple>
-                    @foreach($atributions as $id => $atribution)
-                        <option value="{{ $id }}" {{ in_array($id, old('atributions', [])) ? 'selected' : '' }}>{{ $atribution }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('atributions'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('atributions') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.assignment.fields.atribution_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="utilisateur">{{ trans('cruds.assignment.fields.utilisateur') }}</label>
-                <input class="form-control {{ $errors->has('utilisateur') ? 'is-invalid' : '' }}" type="text" name="utilisateur" id="utilisateur" value="{{ old('utilisateur', '') }}">
-                @if($errors->has('utilisateur'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('utilisateur') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.assignment.fields.utilisateur_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="services">{{ trans('cruds.assignment.fields.service') }}</label>
-                <div style="padding-bottom: 4px">
-                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
-                </div>
-                <select class="form-control select2 {{ $errors->has('services') ? 'is-invalid' : '' }}" name="services[]" id="services" multiple>
-                    @foreach($services as $id => $service)
-                        <option value="{{ $id }}" {{ in_array($id, old('services', [])) ? 'selected' : '' }}>{{ $service }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('services'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('services') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.assignment.fields.service_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
-                    {{ trans('global.save') }}
-                </button>
-            </div>
-        </form>
+<div class="page-head">
+    <div>
+        <div class="crumb"><a href="{{ route('admin.assignments.index') }}">Affectations</a> › Nouvelle</div>
+        <h1>Nouvelle affectation</h1>
+        <p class="sub">Remettre du matériel à un agent ou à un service. Un bon numéroté est créé automatiquement.</p>
     </div>
 </div>
 
+<form method="POST" action="{{ route('admin.assignments.store') }}">
+    @csrf
+    <div class="sy-grid-2">
+        <div>
+            <section class="sy-card">
+                <div class="sy-card-head">
+                    <div>
+                        <h2>Matériel à affecter</h2>
+                        <p>Seules les matières disponibles (ni affectées, ni en panne) sont proposées.</p>
+                    </div>
+                </div>
+                <div class="sy-card-body">
+                    @php($assetErrors = collect($errors->get('assets'))->merge(collect($errors->get('assets.*'))->flatten()))
+                    @if($assetErrors->isNotEmpty())
+                        <div class="alert alert-danger">
+                            @foreach($assetErrors as $msg)<div>{{ $msg }}</div>@endforeach
+                        </div>
+                    @endif
+
+                    @include('admin.assignments.partials.asset-picker', [
+                        'assets'   => $availableAssets,
+                        'selected' => old('assets', $selectedAssets),
+                    ])
+                </div>
+            </section>
+        </div>
+
+        <div>
+            <section class="sy-card">
+                <div class="sy-card-head"><h2>Bénéficiaire et conditions</h2></div>
+                <div class="sy-card-body">
+                    @include('admin.assignments.partials.beneficiary')
+                </div>
+            </section>
+
+            <div class="page-actions" style="justify-content:flex-end">
+                <a href="{{ route('admin.assignments.index') }}" class="btn btn-default">Annuler</a>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> Enregistrer l'affectation</button>
+            </div>
+        </div>
+    </div>
+</form>
+@endsection
+
+@section('scripts')
+@parent
+@stack('beneficiary-js')
+@stack('picker-js')
 @endsection

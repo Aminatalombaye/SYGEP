@@ -39,10 +39,10 @@ class TimeReportController extends Controller
                 if (! isset($projectTimes[$project->project->id])) {
                     $projectTimes[$project->project->id] = [
                         'name' => $project->project->name,
-                        'time' => $begin->diffInSeconds($end),
+                        'time' => (int) $begin->diffInSeconds($end, true),
                     ];
                 } else {
-                    $projectTimes[$project->project->id]['time'] += $begin->diffInSeconds($end);
+                    $projectTimes[$project->project->id]['time'] += (int) $begin->diffInSeconds($end, true);
                 }
             }
         }
@@ -59,10 +59,10 @@ class TimeReportController extends Controller
                 if (! isset($workTypeTime[$workType->work_type->id])) {
                     $workTypeTime[$workType->work_type->id] = [
                         'name' => $workType->work_type->name,
-                        'time' => $begin->diffInSeconds($end),
+                        'time' => (int) $begin->diffInSeconds($end, true),
                     ];
                 } else {
-                    $workTypeTime[$workType->work_type->id]['time'] += $begin->diffInSeconds($end);
+                    $workTypeTime[$workType->work_type->id]['time'] += (int) $begin->diffInSeconds($end, true);
                 }
             }
         }

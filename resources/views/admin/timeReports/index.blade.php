@@ -1,6 +1,11 @@
 @extends('layouts.admin')
 @section('content')
-<h3 class="page-title">{{ trans('cruds.timeReport.reports.title') }}</h3>
+<div class="page-head">
+    <div>
+        <h1>{{ trans('cruds.timeReport.reports.title') }}</h1>
+        <p class="sub">Temps passé par projet et par type de travail sur la période choisie.</p>
+    </div>
+</div>
 
 <form method="get">
     <div class="row">
@@ -66,7 +71,6 @@
 @section('scripts')
 @parent
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.4.5/jquery-ui-timepicker-addon.min.js"></script>
-<script src="https://cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
 <script>
     $('.date').datepicker({
         autoclose: true,

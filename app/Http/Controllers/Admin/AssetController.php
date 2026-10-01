@@ -27,7 +27,7 @@ class AssetController extends Controller
     {
         abort_if(Gate::denies('asset_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $assets = Asset::with(['category', 'status', 'location', 'fournisseurs', 'bons', 'inventaire_codes', 'media'])->get();
+        $assets = Asset::with(['category', 'status', 'location', 'agent', 'service', 'fournisseurs', 'bons', 'inventaire_codes', 'media'])->get();
 
         return view('admin.assets.index', compact('assets'));
     }
@@ -48,17 +48,14 @@ class AssetController extends Controller
 
         $bons = Bon::pluck('bon', 'id');
 
-        $inventaire_codes = Inventaire::pluck('reference', 'id');
-
-        return view('admin.assets.create', compact('bons', 'categories', 'fournisseurs', 'inventaire_codes', 'locations', 'statuses'));
+        return view('admin.assets.create', compact('bons', 'categories', 'fournisseurs', 'locations', 'statuses'));
     }
 
     public function store(StoreAssetRequest $request)
     {
-        $asset = Asset::create($request->all());
+        $asset = Asset::create($request->except(['agent_id', 'service_id', 'qr_code']));
         $asset->fournisseurs()->sync($request->input('fournisseurs', []));
         $asset->bons()->sync($request->input('bons', []));
-        $asset->inventaire_codes()->sync($request->input('inventaire_codes', []));
         foreach ($request->input('photos', []) as $file) {
             $asset->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('photos');
         }
@@ -84,19 +81,16 @@ class AssetController extends Controller
 
         $bons = Bon::pluck('bon', 'id');
 
-        $inventaire_codes = Inventaire::pluck('reference', 'id');
+        $asset->load('category', 'status', 'location', 'fournisseurs', 'bons');
 
-        $asset->load('category', 'status', 'location', 'fournisseurs', 'bons', 'inventaire_codes');
-
-        return view('admin.assets.edit', compact('asset', 'bons', 'categories', 'fournisseurs', 'inventaire_codes', 'locations', 'statuses'));
+        return view('admin.assets.edit', compact('asset', 'bons', 'categories', 'fournisseurs', 'locations', 'statuses'));
     }
 
     public function update(UpdateAssetRequest $request, Asset $asset)
     {
-        $asset->update($request->all());
+        $asset->update($request->except(['agent_id', 'service_id', 'qr_code']));
         $asset->fournisseurs()->sync($request->input('fournisseurs', []));
         $asset->bons()->sync($request->input('bons', []));
-        $asset->inventaire_codes()->sync($request->input('inventaire_codes', []));
         if (count($asset->photos) > 0) {
             foreach ($asset->photos as $media) {
                 if (! in_array($media->file_name, $request->input('photos', []))) {
@@ -118,9 +112,16 @@ class AssetController extends Controller
     {
         abort_if(Gate::denies('asset_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $asset->load('category', 'status', 'location', 'fournisseurs', 'bons', 'inventaire_codes');
+        $asset->load([
+            'category', 'status', 'location', 'fournisseurs', 'bons', 'inventaire_codes',
+            'agent.service', 'service',
+            'histories' => fn ($q) => $q->with(['status', 'location', 'agent', 'service', 'assignment', 'user'])->limit(50),
+        ]);
 
-        return view('admin.assets.show', compact('asset'));
+        return view('admin.assets.show', [
+            'asset'   => $asset,
+            'current' => $asset->currentAssignment(),
+        ]);
     }
 
     public function destroy(Asset $asset)

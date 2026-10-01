@@ -1,88 +1,56 @@
 @extends('layouts.admin')
 @section('content')
-@can('user_alert_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.user-alerts.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.userAlert.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
+@include('partials.module-overview', [
+    'title' => trans('cruds.userAlert.title'),
+    'create' => ['route' => 'admin.user-alerts.create', 'can' => 'user_alert_create', 'label' => 'Envoyer une notification'],
+])
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.userAlert.title_singular') }} {{ trans('global.list') }}
+        Liste
     </div>
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-UserAlert">
+            <table class="table table-hover datatable datatable-UserAlert">
                 <thead>
                     <tr>
-                        <th width="10">
-
-                        </th>
-                        <th>
-                            {{ trans('cruds.userAlert.fields.id') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.userAlert.fields.alert_text') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.userAlert.fields.alert_link') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.userAlert.fields.user') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.userAlert.fields.created_at') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
+                        <th width="10"></th>
+                        <th>Message</th>
+                        <th>Type</th>
+                        <th>Destinataires</th>
+                        <th>Lecture</th>
+                        <th>Envoyée le</th>
+                        <th>&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($userAlerts as $key => $userAlert)
+                    @foreach($userAlerts as $userAlert)
+                        @php($pct = $userAlert->users_count ? round($userAlert->read_count * 100 / $userAlert->users_count) : 0)
                         <tr data-entry-id="{{ $userAlert->id }}">
-                            <td>
-
+                            <td></td>
+                            <td class="strong">
+                                <i class="bi {{ $userAlert->icon }} muted"></i>
+                                <a href="{{ route('admin.user-alerts.show', $userAlert) }}">{{ \Illuminate\Support\Str::limit($userAlert->alert_text, 90) }}</a>
                             </td>
-                            <td>
-                                {{ $userAlert->id ?? '' }}
+                            <td><span class="pill pill-info">{{ $userAlert->kind_label }}</span></td>
+                            <td>{{ $userAlert->users_count }}</td>
+                            <td data-order="{{ $pct }}">
+                                <div class="read-bar" title="{{ $userAlert->read_count }} / {{ $userAlert->users_count }}"><span style="width: {{ $pct }}%"></span></div>
+                                <span class="muted">{{ $userAlert->read_count }} / {{ $userAlert->users_count }}</span>
                             </td>
-                            <td>
-                                {{ $userAlert->alert_text ?? '' }}
-                            </td>
-                            <td>
-                                {{ $userAlert->alert_link ?? '' }}
-                            </td>
-                            <td>
-                                @foreach($userAlert->users as $key => $item)
-                                    <span class="badge badge-info">{{ $item->name }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                {{ $userAlert->created_at ?? '' }}
-                            </td>
-                            <td>
+                            <td class="nowrap" data-order="{{ $userAlert->created_at?->format('Y-m-d H:i:s') }}">{{ $userAlert->created_at?->format('d/m/Y H:i') }}</td>
+                            <td class="nowrap">
                                 @can('user_alert_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.user-alerts.show', $userAlert->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
+                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.user-alerts.show', $userAlert) }}" title="Voir" aria-label="Voir"><i class="bi bi-eye"></i></a>
                                 @endcan
-
-
                                 @can('user_alert_delete')
-                                    <form action="{{ route('admin.user-alerts.destroy', $userAlert->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                    <form action="{{ route('admin.user-alerts.destroy', $userAlert) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-xs btn-icon btn-icon-danger" title="Supprimer" aria-label="Supprimer"><i class="bi bi-trash3"></i></button>
                                     </form>
                                 @endcan
-
                             </td>
-
                         </tr>
                     @endforeach
                 </tbody>
@@ -131,7 +99,7 @@
 
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,
-    order: [[ 1, 'desc' ]],
+    order: [[ 5, 'desc' ]],
     pageLength: 100,
   });
   let table = $('.datatable-UserAlert:not(.ajaxTable)').DataTable({ buttons: dtButtons })

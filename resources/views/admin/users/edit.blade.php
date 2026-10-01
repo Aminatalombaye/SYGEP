@@ -1,13 +1,11 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
-        {{ trans('global.edit') }} {{ trans('cruds.user.title_singular') }}
-    </div>
+@include('partials.form-head', ['module' => 'user', 'mode' => 'edit', 'index' => 'admin.users.index', 'record' => $user])
+<div class="card sy-form">
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.users.update", [$user->id]) }}" enctype="multipart/form-data">
+        <form class="sy-form-grid" method="POST" action="{{ route("admin.users.update", [$user->id]) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf
             <div class="form-group">
@@ -54,6 +52,17 @@
                 <span class="help-block">{{ trans('cruds.user.fields.approved_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="service_id">Service de rattachement</label>
+                <select class="form-control select2 {{ $errors->has('service_id') ? 'is-invalid' : '' }}" name="service_id" id="service_id">
+                    <option value="">— Aucun (compte central) —</option>
+                    @foreach($services as $id => $name)
+                        <option value="{{ $id }}" @selected((int) old('service_id', $user->service_id) === $id)>{{ $name }}</option>
+                    @endforeach
+                </select>
+                @error('service_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <span class="help-block">Obligatoire pour un comptable matière secondaire ou un agent : ils ne verront que les données de ce service.</span>
+            </div>
+            <div class="form-group">
                 <label class="required" for="roles">{{ trans('cruds.user.fields.roles') }}</label>
                 <div style="padding-bottom: 4px">
                     <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
@@ -71,10 +80,9 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.user.fields.roles_helper') }}</span>
             </div>
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
-                    {{ trans('global.save') }}
-                </button>
+            <div class="sy-form-actions">
+                <a href="{{ route('admin.users.index') }}" class="btn btn-default">Annuler</a>
+                <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i> {{ trans('global.save') }}</button>
             </div>
         </form>
     </div>

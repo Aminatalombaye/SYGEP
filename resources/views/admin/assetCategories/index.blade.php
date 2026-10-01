@@ -1,17 +1,12 @@
 @extends('layouts.admin')
 @section('content')
-@can('asset_category_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.asset-categories.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.assetCategory.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
+@include('partials.module-overview', [
+    'title' => trans('cruds.assetCategory.title'),
+    'create' => ['route' => 'admin.asset-categories.create', 'can' => 'asset_category_create', 'label' => trans('global.add').' '.trans('cruds.assetCategory.title_singular')],
+])
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.assetCategory.title_singular') }} {{ trans('global.list') }}
+        Liste
     </div>
 
     <div class="card-body">
@@ -47,22 +42,18 @@
                             </td>
                             <td>
                                 @can('asset_category_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.asset-categories.show', $assetCategory->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
+                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.asset-categories.show', $assetCategory->id) }}" title="Voir" aria-label="Voir"><i class="bi bi-eye"></i></a>
                                 @endcan
 
                                 @can('asset_category_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.asset-categories.edit', $assetCategory->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
+                                    <a class="btn btn-xs btn-icon" href="{{ route('admin.asset-categories.edit', $assetCategory->id) }}" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
                                 @endcan
 
                                 @can('asset_category_delete')
                                     <form action="{{ route('admin.asset-categories.destroy', $assetCategory->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        <button type="submit" class="btn btn-xs btn-icon btn-icon-danger" title="Supprimer" aria-label="Supprimer"><i class="bi bi-trash3"></i></button>
                                     </form>
                                 @endcan
 

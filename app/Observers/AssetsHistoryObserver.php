@@ -7,15 +7,28 @@ use App\Models\AssetsHistory;
 
 class AssetsHistoryObserver
 {
-    public function updated(Asset $asset)
+    public function created(Asset $asset): void
     {
-        if (auth()->check()) {
-            AssetsHistory::create([
-                'asset_id'         => $asset->id,
-                'status_id'        => $asset->status_id,
-                'location_id'      => $asset->location_id,
-                'assigned_user_id' => $asset->assigned_to_id,
-            ]);
+        $this->record($asset, 'creation');
+    }
+
+    public function updated(Asset $asset): void
+    {
+        if ($asset->wasChanged(['status_id', 'location_id', 'agent_id', 'service_id'])) {
+            $this->record($asset, 'modification');
         }
+    }
+
+    private function record(Asset $asset, string $action): void
+    {
+        AssetsHistory::create([
+            'asset_id'    => $asset->id,
+            'action'      => $action,
+            'status_id'   => $asset->status_id,
+            'location_id' => $asset->location_id,
+            'agent_id'    => $asset->agent_id,
+            'service_id'  => $asset->service_id,
+            'user_id'     => auth()->id(),
+        ]);
     }
 }

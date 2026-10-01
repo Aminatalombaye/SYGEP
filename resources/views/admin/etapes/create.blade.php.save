@@ -1,0 +1,373 @@
+@extends('layouts.admin')
+
+@section('content')
+<div class="card">
+    <div class="card-header">
+      Ajouter une étape d'exécution
+    </div>
+
+    <div class="card-body">
+        <form method="POST" action="{{ route('admin.etapes.store') }}">
+            @csrf
+            <input type="hidden" name="project_id" value="{{ $project->id }}">
+
+            <!-- Étape Fondation -->
+            <h5>Gros Oeuvres</h5><span id="total-ponderation" style="font-weight:bold;">0%</span>
+
+            <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+    <label class="required" for="name">Bâtiments associés</label>
+    <input type="hidden" class="form-control" name="infrastructure_id" value="{{ $infrastructures->id }}">
+    <input type="text" class="form-control" name="infrastructure_id" value="{{ $infrastructures->name }}"disabled>
+   
+</div>
+
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="required" for="fondation">Fondation</label>
+                        <span id="fondation-ponderation" style="display: none;"> : 0%</span>
+
+                        @if ($fondationRealisee)
+            <!-- Affichage en lecture seule si "Réalisé" -->
+            <input type="text" class="form-control" value="Réalisé" name="fondation" id="fondation" readonly>
+        @else
+            <!-- Affichage du select si ce n'est pas "Réalisé" -->
+            <select class="form-control select2 {{ $errors->has('fondation') ? 'is-invalid' : '' }}" name="fondation" id="fondation" required>
+            <option value="">Selectionner</option>
+                <option value="Réalisé" {{ old('fondation') == 'Réalisé' ? 'selected' : '' }}>Réalisé</option>
+                <option value="Non réalisé" {{ old('fondation') == 'Non réalisé' ? 'selected' : '' }}>Non réalisé</option>
+                <option value="En préparation" {{ old('fondation') == 'En préparation' ? 'selected' : '' }}>En préparation</option>
+                <option value="En cours de mise en œuvre" {{ old('fondation') == 'En cours de mise en œuvre' ? 'selected' : '' }}>En cours de mise en œuvre</option>
+            </select>
+        @endif
+                    </div>
+                </div>
+            </div>
+
+            
+            @if ($fondationRealisee)
+                <div class="row" id="elevation-container">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="required" for="elevation">Élévation</label>
+                            <span id="elevation-ponderation" style="display: none;"> : 0%</span>
+                            @if($elevationRealisee)
+            
+            <input type="text" class="form-control" name="elevation" value="Réalisé" readonly id="elevation">
+        @else
+           
+            <select class="form-control select2 {{ $errors->has('fondation') ? 'is-invalid' : '' }}" name="elevation" id="elevation" required>
+            <option value="">Selectionner</option>
+                <option value="Réalisé" {{ old('fondation') == 'Réalisé' ? 'selected' : '' }}>Réalisé</option>
+                <option value="Non réalisé" {{ old('fondation') == 'Non réalisé' ? 'selected' : '' }}>Non réalisé</option>
+                <option value="En préparation" {{ old('fondation') == 'En préparation' ? 'selected' : '' }}>En préparation</option>
+                <option value="En cours de mise en œuvre" {{ old('fondation') == 'En cours de mise en œuvre' ? 'selected' : '' }}>En cours de mise en œuvre</option>
+            </select>
+        @endif
+                        </div>
+                    </div>
+                    @endif
+
+                    @if($elevationRealisee )
+            <div class="col-md-6">
+                    <div class="form-group"> 
+                        <label class="required" for="funding_source">Plancher haut</label>
+                        <span id="plancher-ponderation" style="display: none;"> : 0%</span>
+                        @if($plancherRealisee)
+        
+            <input type="text" class="form-control" value="Réalisé" name="plancher" readonly id="plancher">
+        @else
+         
+            <select class="form-control select2 {{ $errors->has('fondation') ? 'is-invalid' : '' }}" name="plancher" id="plancher" required>
+            <option value="">Selectionner</option>
+                <option value="Réalisé" {{ old('fondation') == 'Réalisé' ? 'selected' : '' }}>Réalisé</option>
+                <option value="Non réalisé" {{ old('fondation') == 'Non réalisé' ? 'selected' : '' }}>Non réalisé</option>
+                <option value="En préparation" {{ old('fondation') == 'En préparation' ? 'selected' : '' }}>En préparation</option>
+                <option value="En cours de mise en œuvre" {{ old('fondation') == 'En cours de mise en œuvre' ? 'selected' : '' }}>En cours de mise en œuvre</option>
+            </select>
+        @endif
+                    </div>
+                </div>
+            </div>
+            @endif
+                </div>
+                @if($plancherRealisee )
+               
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="required" for="name">Enduit</label>
+                        <span id="enduit-ponderation" style="display: none;"> : 0%</span>
+                        @if($enduitRealisee)
+        
+        <input type="text" class="form-control" value="Réalisé"  name="enduit" readonly  id="enduit">
+    @else
+     
+        <select class="form-control select2 {{ $errors->has('fondation') ? 'is-invalid' : '' }}" name="enduit" id="enduit" required>
+        <option value="">Selectionner</option>
+            <option value="Réalisé" {{ old('fondation') == 'Réalisé' ? 'selected' : '' }}>Réalisé</option>
+            <option value="Non réalisé" {{ old('fondation') == 'Non réalisé' ? 'selected' : '' }}>Non réalisé</option>
+            <option value="En préparation" {{ old('fondation') == 'En préparation' ? 'selected' : '' }}>En préparation</option>
+            <option value="En cours de mise en œuvre" {{ old('fondation') == 'En cours de mise en œuvre' ? 'selected' : '' }}>En cours de mise en œuvre</option>
+        </select>
+    @endif
+                
+                    </div>
+                </div>
+                @endif
+                @if($enduitRealisee)
+                <h5>Second Oeuvres</h5><span id="total-second-oeuvre" style="font-weight:bold;">0%</span>
+                
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="required" for="dateDebut">Carrelage</label>
+                        <span id="carrelage-ponderation" style="display: none;"> : 0%</span>
+                        @if($carrelageRealisee)
+        <input type="text" class="form-control" value="Réalisé" name="carrelage" readonly id="carrelage" >
+    @else
+        <select class="form-control select2 {{ $errors->has('fondation') ? 'is-invalid' : '' }}" name="carrelage" id="carrelage" required>
+        <option value="">Selectionner</option>
+            <option value="Réalisé" {{ old('fondation') == 'Réalisé' ? 'selected' : '' }}>Réalisé</option>
+            <option value="Non réalisé" {{ old('fondation') == 'Non réalisé' ? 'selected' : '' }}>Non réalisé</option>
+            <option value="En préparation" {{ old('fondation') == 'En préparation' ? 'selected' : '' }}>En préparation</option>
+            <option value="En cours de mise en œuvre" {{ old('fondation') == 'En cours de mise en œuvre' ? 'selected' : '' }}>En cours de mise en œuvre</option>
+        </select>
+    @endif
+                    </div>
+                </div>   
+@endif
+@if($carrelageRealisee)
+                <div class="col-md-4">
+
+                    <div class="form-group">
+                        <label class="required" for="datePrev">Electricité</label>
+                        <span id="electricite-ponderation" style="display: none;"> : 0%</span>
+                        @if($electriciteRealisee)
+        
+        <input type="text" class="form-control" value="Réalisé" name="electricite" readonly id="electricite">
+    @else
+     
+        <select class="form-control select2 {{ $errors->has('fondation') ? 'is-invalid' : '' }}" name="electricite" id="electricite" required>
+            <option value="">Selectionner</option>
+            <option value="Réalisé" {{ old('fondation') == 'Réalisé' ? 'selected' : '' }}>Réalisé</option>
+            <option value="Non réalisé" {{ old('fondation') == 'Non réalisé' ? 'selected' : '' }}>Non réalisé</option>
+            <option value="En préparation" {{ old('fondation') == 'En préparation' ? 'selected' : '' }}>En préparation</option>
+            <option value="En cours de mise en œuvre" {{ old('fondation') == 'En cours de mise en œuvre' ? 'selected' : '' }}>En cours de mise en œuvre</option>
+        </select>
+    @endif
+                    </div>
+                </div>
+@endif
+@if($electriciteRealisee)
+<div class="col-md-4">
+                    <div class="form-group">
+                        <label class="required" for="dateReception">Menuiserie</label>
+                        <span id="amenagement-ponderation" style="display: none;"> : 0%</span>
+                        @if($amenagementRealisee)
+        
+        <input type="text" class="form-control" value="Réalisé"  name="amenagement"readonly id="amenagement">
+    @else
+     
+        <select class="form-control select2 {{ $errors->has('fondation') ? 'is-invalid' : '' }}" name="amenagement" id="amenagement" required>
+        <option value="">Selectionner</option>
+            <option value="Réalisé" {{ old('fondation') == 'Réalisé' ? 'selected' : '' }}>Réalisé</option>
+            <option value="Non réalisé" {{ old('fondation') == 'Non réalisé' ? 'selected' : '' }}>Non réalisé</option>
+            <option value="En préparation" {{ old('fondation') == 'En préparation' ? 'selected' : '' }}>En préparation</option>
+            <option value="En cours de mise en œuvre" {{ old('fondation') == 'En cours de mise en œuvre' ? 'selected' : '' }}>En cours de mise en œuvre</option>
+        </select>
+    @endif
+                    </div>
+                </div>
+@endif
+                </div>
+
+                <div class="row">
+                @if($amenagementRealisee)    
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="required" for="name">Plomberie</label>
+                        <span id="plomberie-ponderation" style="display: none;"> : 0%</span>
+                        @if($plomberieRealisee)
+        
+        <input type="text" class="form-control" value="Réalisé"  name="plomberie" readonly id="plomberie">
+    @else
+     
+        <select class="form-control select2 {{ $errors->has('fondation') ? 'is-invalid' : '' }}" name="plomberie" id="plomberie" required>
+        <option value="">Selectionner</option>
+            <option value="Réalisé" {{ old('fondation') == 'Réalisé' ? 'selected' : '' }}>Réalisé</option>
+            <option value="Non réalisé" {{ old('fondation') == 'Non réalisé' ? 'selected' : '' }}>Non réalisé</option>
+            <option value="En préparation" {{ old('fondation') == 'En préparation' ? 'selected' : '' }}>En préparation</option>
+            <option value="En cours de mise en œuvre" {{ old('fondation') == 'En cours de mise en œuvre' ? 'selected' : '' }}>En cours de mise en œuvre</option>
+        </select>
+    @endif
+                    </div>
+                </div>
+@endif
+@if($plomberieRealisee) 
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="required" for="funding_source">Peinture</label>
+                        <span id="peinture-ponderation" style="display: none;"> : 0%</span>
+                        @if($peintureRealisee)
+        
+        <input type="text" class="form-control" value="Réalisé"  name="peinture" readonly id="peinture" >
+    @else
+     
+        <select class="form-control select2 {{ $errors->has('fondation') ? 'is-invalid' : '' }}" name="peinture" id="peinture" required>
+        <option value="">Selectionner</option>
+            <option value="Réalisé" {{ old('fondation') == 'Réalisé' ? 'selected' : '' }}>Réalisé</option>
+            <option value="Non réalisé" {{ old('fondation') == 'Non réalisé' ? 'selected' : '' }}>Non réalisé</option>
+            <option value="En préparation" {{ old('fondation') == 'En préparation' ? 'selected' : '' }}>En préparation</option>
+            <option value="En cours de mise en œuvre" {{ old('fondation') == 'En cours de mise en œuvre' ? 'selected' : '' }}>En cours de mise en œuvre</option>
+        </select>
+    @endif
+                    </div>
+                </div>
+                @endif
+            </div>
+
+
+            <div class="form-group mt-3">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fa fa-save"></i> Enregister
+                </button>
+                <a href="{{ route('admin.projects.index') }}" class="btn btn-default">
+                    <i class="fa fa-times"></i> Annuler
+                </a>
+            </div>
+        </form>
+        <div class="form-group mt-4">
+                <a href="{{ route('admin.etapes.index', $project->id) }}" class="btn btn-secondary">
+                   Retour
+                </a>
+            </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    function updatePonderation() {
+        let pondFondation = getPonderation($('#fondation').val(), 20);
+        let pondElevation = $('#elevation').length > 0 ? getPonderation($('#elevation').val(), 20) : 0;
+        let pondPlancher = $('#plancher').length > 0 ? getPonderation($('#plancher').val(), 10) : 0;
+        let pondEnduit = $('#enduit').length > 0 ? getPonderation($('#enduit').val(), 10) : 0;
+
+        // Affiche même si les éléments ne sont pas présents (grâce à updateColorAndDisplay)
+        updateColorAndDisplay('#fondation-ponderation', pondFondation);
+        updateColorAndDisplay('#elevation-ponderation', pondElevation);
+        updateColorAndDisplay('#plancher-ponderation', pondPlancher);
+        updateColorAndDisplay('#enduit-ponderation', pondEnduit);
+
+        let total = pondFondation + pondElevation + pondPlancher + pondEnduit;
+        $('#total-ponderation').text(total + '%');
+    }
+
+    function getPonderation(status, poids) {
+        if (status === "Réalisé") {
+            return poids;
+        } else if (
+            status === "Non réalisé" || 
+            status === "En préparation" || 
+            status === "En cours de mise en œuvre"
+        ) {
+            return 0;
+        }
+        return 0;
+    }
+
+    function updateColorAndDisplay(id, pond) {
+        let el = $(id);
+        if (el.length > 0) {
+            el.show()
+              .text(' : ' + pond + '%')
+              .css('color', pond > 0 ? 'green' : 'red');
+        }
+    }
+
+    // Lancer la mise à jour initiale
+    updatePonderation();
+
+    // Attacher les événements si les éléments existent
+    ['#fondation', '#elevation', '#plancher', '#enduit'].forEach(selector => {
+        if ($(selector).length > 0) {
+            $(selector).on('change', function() {
+                updatePonderation();
+            });
+        }
+    });
+});
+</script>
+
+<script>
+$(document).ready(function() {
+
+    // Fonction principale
+    function updateSecondOeuvrePonderation() {
+        // Récupération des statuts
+        let carrelage = $('#carrelage').val();
+        let electricite = $('#electricite').val();
+        let plomberie = $('#plomberie').val();
+        let peinture = $('#peinture').val();
+        let amenagement = $('#amenagement').val();
+
+        // Calcul des pondérations individuelles
+        let pondCarrelage   = (carrelage === 'Réalisé') ? 10 : 0;
+        let pondElectricite = (electricite === 'Réalisé') ? 10 : (electricite === 'En préparation' ? 5 : 0);
+        let pondPlomberie   = (plomberie === 'Réalisé') ? 10 : 0;
+        let pondPeinture    = (peinture === 'Réalisé') ? 5  : 0;
+        let pondAmenagement = (amenagement === 'Réalisé') ? 5  : 0;
+
+        // Mise à jour affichage individuel avec condition de visibilité
+        updateColorAndDisplay('#carrelage-ponderation', pondCarrelage, carrelage);
+        updateColorAndDisplay('#electricite-ponderation', pondElectricite, electricite);
+        updateColorAndDisplay('#plomberie-ponderation', pondPlomberie, plomberie);
+        updateColorAndDisplay('#peinture-ponderation', pondPeinture, peinture);
+        updateColorAndDisplay('#amenagement-ponderation', pondAmenagement, amenagement);
+
+        // Total
+        let totalSecondOeuvre = 0;
+        [pondCarrelage, pondElectricite, pondPlomberie, pondPeinture, pondAmenagement].forEach(val => {
+            totalSecondOeuvre += val;
+        });
+
+        // Affichage du total
+        if (totalSecondOeuvre > 0) {
+            $('#total-second-oeuvre').text(totalSecondOeuvre + '%').css('color', 'green');
+        } else {
+            $('#total-second-oeuvre').text('0%').css('color', 'red');
+        }
+    }
+
+    // Fonction d'affichage conditionnel
+    function updateColorAndDisplay(id, pond, status) {
+        if (!status) {
+            $(id).hide(); // Ne rien afficher si aucune option sélectionnée
+            return;
+        }
+
+        if (pond > 0) {
+            $(id).show().text(' : ' + pond + '%').css('color', 'green');
+        } else {
+            $(id).show().text(' : ' + pond + '%').css('color', 'red');
+        }
+    }
+
+    // Écoute les changements
+    $('#carrelage, #electricite, #plomberie, #peinture, #amenagement').change(function() {
+        updateSecondOeuvrePonderation();
+    });
+
+    // Initialisation au chargement
+    updateSecondOeuvrePonderation();
+});
+</script>
+
+
+
+
+
+@endsection

@@ -18,7 +18,7 @@ class UsersController extends Controller
     {
         abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $users = User::with(['roles'])->get();
+        $users = User::with(['roles', 'service'])->get();
 
         return view('admin.users.index', compact('users'));
     }
@@ -28,8 +28,9 @@ class UsersController extends Controller
         abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $roles = Role::pluck('title', 'id');
+        $services = \App\Models\Service::orderBy('name')->pluck('name', 'id');
 
-        return view('admin.users.create', compact('roles'));
+        return view('admin.users.create', compact('roles', 'services'));
     }
 
     public function store(StoreUserRequest $request)
@@ -45,10 +46,11 @@ class UsersController extends Controller
         abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $roles = Role::pluck('title', 'id');
+        $services = \App\Models\Service::orderBy('name')->pluck('name', 'id');
 
         $user->load('roles');
 
-        return view('admin.users.edit', compact('roles', 'user'));
+        return view('admin.users.edit', compact('roles', 'services', 'user'));
     }
 
     public function update(UpdateUserRequest $request, User $user)
@@ -63,7 +65,7 @@ class UsersController extends Controller
     {
         abort_if(Gate::denies('user_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $user->load('roles', 'userUserAlerts');
+        $user->load('roles', 'service', 'userUserAlerts');
 
         return view('admin.users.show', compact('user'));
     }
