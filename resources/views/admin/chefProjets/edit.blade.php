@@ -9,8 +9,8 @@
             @method('PUT')
             @csrf
             <div class="form-group">
-                <label for="nom">{{ trans('cruds.chefProjet.fields.nom') }}</label>
-                <input class="form-control {{ $errors->has('nom') ? 'is-invalid' : '' }}" type="text" name="nom" id="nom" value="{{ old('nom', $chefProjet->nom) }}">
+                <label class="required" for="nom">{{ trans('cruds.chefProjet.fields.nom') }}</label>
+                <input class="form-control {{ $errors->has('nom') ? 'is-invalid' : '' }}" type="text" name="nom" id="nom" value="{{ old('nom', $chefProjet->nom) }}" required>
                 @if($errors->has('nom'))
                     <div class="invalid-feedback">
                         {{ $errors->first('nom') }}
@@ -19,8 +19,8 @@
                 <span class="help-block">{{ trans('cruds.chefProjet.fields.nom_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="prenom">{{ trans('cruds.chefProjet.fields.prenom') }}</label>
-                <input class="form-control {{ $errors->has('prenom') ? 'is-invalid' : '' }}" type="text" name="prenom" id="prenom" value="{{ old('prenom', $chefProjet->prenom) }}">
+                <label class="required" for="prenom">{{ trans('cruds.chefProjet.fields.prenom') }}</label>
+                <input class="form-control {{ $errors->has('prenom') ? 'is-invalid' : '' }}" type="text" name="prenom" id="prenom" value="{{ old('prenom', $chefProjet->prenom) }}" required>
                 @if($errors->has('prenom'))
                     <div class="invalid-feedback">
                         {{ $errors->first('prenom') }}
