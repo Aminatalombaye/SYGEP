@@ -20,7 +20,7 @@ class StoreAssignmentRequest extends FormRequest
             'location_id'        => ['nullable', 'integer', 'exists:asset_locations,id'],
             'type'               => ['nullable', 'string', 'in:'.implode(',', array_keys(\App\Models\Assignment::TYPES))],
             'assigned_at'        => ['required', 'date'],
-            'expected_return_at' => ['nullable', 'date', 'after_or_equal:assigned_at'],
+            'expected_return_at' => [\Illuminate\Validation\Rule::requiredIf(fn () => ! in_array($this->input('type') ?: 'dotation', ['dotation', 'programme'], true)), 'nullable', 'date', 'after_or_equal:assigned_at'],
             'assets'             => ['required', 'array', 'min:1'],
             'assets.*'           => ['integer', 'distinct', 'exists:assets,id'],
             'notes'              => ['nullable', 'string', 'max:2000'],
@@ -44,6 +44,7 @@ class StoreAssignmentRequest extends FormRequest
         return [
             'agent_id.required_without'         => 'Choisissez un agent ou un service bénéficiaire.',
             'assets.required'                   => 'Sélectionnez au moins une matière.',
+            'expected_return_at.required'       => 'Indiquez la date de retour prévue pour ce type d\'affectation.',
             'expected_return_at.after_or_equal' => 'La date de retour prévue doit suivre la date d\'affectation.',
         ];
     }

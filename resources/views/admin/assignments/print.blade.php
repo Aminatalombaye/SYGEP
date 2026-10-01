@@ -85,12 +85,13 @@
 
         <table>
             <thead>
-                <tr><th style="width:36px">#</th><th>Désignation</th><th>Catégorie</th><th>N° de série</th><th>Modèle</th></tr>
+                <tr><th style="width:36px">#</th><th>Code</th><th>Désignation</th><th>Catégorie</th><th>N° de série</th><th>Modèle</th></tr>
             </thead>
             <tbody>
                 @foreach($assignment->matieres as $i => $asset)
                     <tr>
                         <td>{{ $i + 1 }}</td>
+                        <td>{{ $asset->qr_code ?: '—' }}</td>
                         <td>{{ $asset->name }}</td>
                         <td>{{ $asset->category->name ?? '—' }}</td>
                         <td>{{ $asset->serial_number ?: '—' }}</td>
