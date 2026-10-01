@@ -57,7 +57,7 @@
                                     @if($plan->active)
                                         <form method="POST" action="{{ route('admin.maintenance-plans.generate', $plan) }}" style="display:inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-xs btn-default" title="Créer la demande maintenant"><i class="bi bi-lightning-charge"></i> Lancer</button>
+                                            <button type="submit" class="btn btn-xs btn-icon" title="Lancer : créer la demande maintenant" aria-label="Lancer"><i class="bi bi-lightning-charge"></i></button>
                                         </form>
                                     @endif
                                     <a class="btn btn-xs btn-icon" href="{{ route('admin.maintenance-plans.edit', $plan) }}" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
