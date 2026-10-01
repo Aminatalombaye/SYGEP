@@ -535,9 +535,9 @@ td form { margin: 0; }
     font-size: 14px; font-weight: 500; color: var(--sy-muted-2); white-space: nowrap;
 }
 .dt-toolbar .dataTables_length select {
-    min-width: 76px; height: 36px; padding: 0 28px 0 10px !important; margin: 0 !important;
+    min-width: 64px; height: 36px; padding: 0 10px !important; margin: 0 !important;
     border: 1px solid var(--sy-line) !important; border-radius: 9px !important; background-color: #fff;
-    font-size: 14px; appearance: auto;
+    font-size: 14px; appearance: none; -webkit-appearance: none; -moz-appearance: none; background-image: none;
 }
 .dt-toolbar .dataTables_filter input {
     height: 36px; min-width: 220px; margin: 0 !important; padding: 0 12px !important;
