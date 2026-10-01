@@ -215,7 +215,7 @@ class ProjectController extends Controller
             'type'        => ['required', Rule::in(array_keys(Project::TYPES))],
             'status'      => ['required', Rule::in(array_keys(Project::STATUSES))],
             'description' => ['nullable', 'string', 'max:5000'],
-            'start_date'  => ['nullable', 'date'],
+            'start_date'  => [Rule::requiredIf(fn () => in_array($request->input('status'), ['en_cours', 'suspendu', 'termine'], true)), 'nullable', 'date'],
             'end_date'    => ['nullable', 'date', 'after_or_equal:start_date'],
             'budget'      => ['nullable', 'numeric', 'min:0'],
             'spent'       => ['nullable', 'numeric', 'min:0'],
@@ -225,6 +225,7 @@ class ProjectController extends Controller
             'chef_projets'      => ['nullable', 'array'],
             'chef_projets.*'    => ['integer', 'exists:chef_projets,id'],
         ], [
+            'start_date.required'     => 'Indiquez la date de démarrage : le projet est déjà lancé.',
             'end_date.after_or_equal' => 'La date de fin doit suivre la date de début.',
         ]);
 
@@ -232,7 +233,7 @@ class ProjectController extends Controller
         if ($project && $project->milestones()->exists()) {
             unset($data['progress']);
         } else {
-            $data['progress'] = (int) ($data['progress'] ?? ($data['status'] === 'termine' ? 100 : 0));
+            $data['progress'] = $data['status'] === 'termine' ? 100 : (int) ($data['progress'] ?? 0);
         }
 
         return collect($data)->except(['infrastructures', 'chef_projets'])->all();
