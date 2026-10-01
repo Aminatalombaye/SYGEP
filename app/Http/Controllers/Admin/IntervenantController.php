@@ -93,12 +93,16 @@ class IntervenantController extends Controller
         return $request->validate([
             'nom'          => ['required', 'string', 'max:255'],
             'prenom'       => ['nullable', 'string', 'max:255'],
-            'organisation' => ['nullable', 'string', 'max:255'],
+            'organisation' => [Rule::requiredIf(fn () => ! in_array($request->input('role'), ['technicien', 'autre'], true)), 'nullable', 'string', 'max:255'],
             'role'         => ['required', Rule::in(array_keys(Intervenant::ROLES))],
-            'telephone'    => ['nullable', 'string', 'max:40'],
-            'email'        => ['nullable', 'email', 'max:255'],
+            'telephone'    => ['nullable', 'string', 'max:40', 'required_without:email'],
+            'email'        => ['nullable', 'email', 'max:255', 'required_without:telephone'],
             'adresse'      => ['nullable', 'string', 'max:255'],
             'notes'        => ['nullable', 'string', 'max:2000'],
+        ], [
+            'organisation.required'     => 'Indiquez l\'entreprise ou l\'organisme de cet intervenant.',
+            'telephone.required_without' => 'Indiquez au moins un téléphone ou un e-mail pour pouvoir le joindre.',
+            'email.required_without'     => 'Indiquez au moins un téléphone ou un e-mail pour pouvoir le joindre.',
         ]);
     }
 }
