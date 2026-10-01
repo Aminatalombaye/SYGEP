@@ -49,8 +49,8 @@
                 <span class="help-block">{{ trans('cruds.bon.fields.nom_destinataire_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="bon">{{ trans('cruds.bon.fields.bon') }}</label>
-                <input class="form-control {{ $errors->has('bon') ? 'is-invalid' : '' }}" type="text" name="bon" id="bon" value="{{ old('bon', $bon->bon) }}">
+                <label class="required" for="bon">{{ trans('cruds.bon.fields.bon') }}</label>
+                <input class="form-control {{ $errors->has('bon') ? 'is-invalid' : '' }}" type="text" name="bon" id="bon" value="{{ old('bon', $bon->bon) }}" required>
                 @if($errors->has('bon'))
                     <div class="invalid-feedback">
                         {{ $errors->first('bon') }}

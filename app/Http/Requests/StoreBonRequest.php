@@ -24,11 +24,11 @@ class StoreBonRequest extends FormRequest
             'organisation' => [
                 'string',
                 'required',
-                'unique:bons',
             ],
             'reference_commande' => [
                 'string',
                 'required',
+                'unique:bons,reference_commande',
             ],
             'nom_destinataire' => [
                 'string',
@@ -36,11 +36,12 @@ class StoreBonRequest extends FormRequest
             ],
             'bon' => [
                 'string',
-                'nullable',
+                'required',
             ],
             'date_livraison' => [
                 'date_format:' . config('panel.date_format'),
                 'nullable',
+                'after_or_equal:date_emission',
             ],
         ];
     }
