@@ -46,12 +46,14 @@
 
 <div class="form-group">
     <label class="required" for="next_due_at">Prochaine échéance</label>
-    <input class="form-control" type="date" name="next_due_at" id="next_due_at" value="{{ old('next_due_at', $plan->next_due_at?->toDateString()) }}" required>
+    <input class="form-control {{ $errors->has('next_due_at') ? 'is-invalid' : '' }}" type="date" name="next_due_at" id="next_due_at" value="{{ old('next_due_at', $plan->next_due_at?->toDateString()) }}" required>
+    @error('next_due_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 
 <div class="form-group">
     <label class="required" for="lead_days">Créer la demande … jours avant</label>
-    <input class="form-control" type="number" min="0" max="90" name="lead_days" id="lead_days" value="{{ old('lead_days', $plan->lead_days) }}" required>
+    <input class="form-control {{ $errors->has('lead_days') ? 'is-invalid' : '' }}" type="number" min="0" max="90" name="lead_days" id="lead_days" value="{{ old('lead_days', $plan->lead_days) }}" required>
+    @error('lead_days')<div class="invalid-feedback">{{ $message }}</div>@enderror
     <span class="hint">La demande est créée automatiquement avec l'avis technique, puis soumise à l'approbation du Directeur.</span>
 </div>
 
@@ -66,8 +68,9 @@
 </div>
 
 <div class="form-group full-row">
-    <label for="description">Points de contrôle</label>
-    <textarea class="form-control" name="description" id="description" rows="3" placeholder="Liste des vérifications à effectuer…">{{ old('description', $plan->description) }}</textarea>
+    <label class="required" for="description">Points de contrôle</label>
+    <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description" rows="3" required placeholder="Liste des vérifications à effectuer…">{{ old('description', $plan->description) }}</textarea>
+    @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 
 <div class="form-group full-row">
