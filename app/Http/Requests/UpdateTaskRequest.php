@@ -34,6 +34,7 @@ class UpdateTaskRequest extends FormRequest
             'due_date' => [
                 'date_format:' . config('panel.date_format'),
                 'nullable',
+                'after_or_equal:scheduled_date',
             ],
             'equipements.*' => [
                 'integer',

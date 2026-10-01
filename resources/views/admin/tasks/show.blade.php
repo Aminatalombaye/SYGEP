@@ -87,7 +87,7 @@
                         </th>
                         <td>
                             @foreach($task->equipements as $key => $equipement)
-                                <span class="label label-info">{{ $equipement->serial_number }}</span>
+                                <span class="label label-info">{{ $equipement->name }}{{ $equipement->serial_number ? " (".$equipement->serial_number.")" : "" }}</span>
                             @endforeach
                         </td>
                     </tr>
