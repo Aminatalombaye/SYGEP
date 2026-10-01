@@ -30,40 +30,16 @@
                             {{ trans('cruds.asset.fields.name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.asset.fields.photos') }}
-                        </th>
-                        <th>
                             {{ trans('cruds.asset.fields.status') }}
                         </th>
                         <th>
                             {{ trans('cruds.asset.fields.location') }}
                         </th>
                         <th>
-                            {{ trans('cruds.asset.fields.notes') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.asset.fields.type') }}
-                        </th>
-                        <th>
                             {{ trans('cruds.asset.fields.date_achat') }}
                         </th>
                         <th>
-                            {{ trans('cruds.asset.fields.date_mise_en_service') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.asset.fields.modele') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.asset.fields.fournisseur') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.asset.fields.bon') }}
-                        </th>
-                        <th>
                             Détenteur
-                        </th>
-                        <th>
-                            {{ trans('cruds.asset.fields.inventaire_code') }}
                         </th>
                         <th>
                             &nbsp;
@@ -89,42 +65,13 @@
                                 {{ $asset->name ?? '' }}
                             </td>
                             <td>
-                                @foreach($asset->photos as $key => $media)
-                                    <a href="{{ $media->getUrl() }}" target="_blank">
-                                        {{ trans('global.view_file') }}
-                                    </a>
-                                @endforeach
-                            </td>
-                            <td>
                                 @if($asset->status)<span class="pill pill-{{ $asset->status->tone }}">{{ $asset->status->label }}</span>@endif
                             </td>
                             <td>
                                 {{ $asset->location->name ?? '' }}
                             </td>
                             <td>
-                                {{ $asset->notes ?? '' }}
-                            </td>
-                            <td>
-                                {{ $asset->type ?? '' }}
-                            </td>
-                            <td>
                                 {{ $asset->date_achat ?? '' }}
-                            </td>
-                            <td>
-                                {{ $asset->date_mise_en_service ?? '' }}
-                            </td>
-                            <td>
-                                {{ $asset->modele ?? '' }}
-                            </td>
-                            <td>
-                                @foreach($asset->fournisseurs as $key => $item)
-                                    <span class="badge badge-info">{{ $item->name }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                @foreach($asset->bons as $key => $item)
-                                    <span class="badge badge-info">{{ $item->bon }}</span>
-                                @endforeach
                             </td>
                             <td>
                                 @if($asset->agent)
@@ -134,11 +81,6 @@
                                 @else
                                     {{ $asset->assigned_to ?? '' }}
                                 @endif
-                            </td>
-                            <td>
-                                @foreach($asset->inventaire_codes as $key => $item)
-                                    <span class="badge badge-info">{{ $item->reference }}</span>
-                                @endforeach
                             </td>
                             <td>
                                 @can('asset_show')
