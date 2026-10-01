@@ -40,7 +40,11 @@ class AssetController extends Controller
 
         $services = Service::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $statuses = AssetStatus::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        // À la création : ni « Affecté » (vient d'une affectation) ni « En réparation » (vient de la maintenance).
+        $statuses = AssetStatus::whereNotIn('id', array_merge(AssetStatus::idsFor(AssetStatus::ASSIGNED), AssetStatus::idsFor(AssetStatus::REPAIR)))
+            ->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $defaultStatusId = AssetStatus::idFor(AssetStatus::AVAILABLE);
 
         $locations = AssetLocation::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -48,12 +52,12 @@ class AssetController extends Controller
 
         $bons = Bon::pluck('bon', 'id');
 
-        return view('admin.assets.create', compact('bons', 'categories', 'fournisseurs', 'locations', 'statuses'));
+        return view('admin.assets.create', compact('bons', 'categories', 'defaultStatusId', 'fournisseurs', 'locations', 'statuses'));
     }
 
     public function store(StoreAssetRequest $request)
     {
-        $asset = Asset::create($request->except(['agent_id', 'service_id', 'qr_code']));
+        $asset = Asset::create($request->except(['agent_id', 'service_id', 'qr_code', 'assigned_to']));
         $asset->fournisseurs()->sync($request->input('fournisseurs', []));
         $asset->bons()->sync($request->input('bons', []));
         foreach ($request->input('photos', []) as $file) {
@@ -88,7 +92,7 @@ class AssetController extends Controller
 
     public function update(UpdateAssetRequest $request, Asset $asset)
     {
-        $asset->update($request->except(['agent_id', 'service_id', 'qr_code']));
+        $asset->update($request->except(['agent_id', 'service_id', 'qr_code', 'assigned_to']));
         $asset->fournisseurs()->sync($request->input('fournisseurs', []));
         $asset->bons()->sync($request->input('bons', []));
         if (count($asset->photos) > 0) {

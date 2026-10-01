@@ -56,7 +56,7 @@
                 <label class="required" for="status_id">{{ trans('cruds.asset.fields.status') }}</label>
                 <select class="form-control select2 {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status_id" id="status_id" required>
                     @foreach($statuses as $id => $entry)
-                        <option value="{{ $id }}" {{ old('status_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                        <option value="{{ $id }}" {{ old('status_id', $defaultStatusId ?? null) == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('status'))
@@ -91,8 +91,8 @@
                 <span class="help-block">{{ trans('cruds.asset.fields.notes_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="type">{{ trans('cruds.asset.fields.type') }}</label>
-                <input class="form-control {{ $errors->has('type') ? 'is-invalid' : '' }}" type="text" name="type" id="type" value="{{ old('type', '') }}" required>
+                <label for="type">{{ trans('cruds.asset.fields.type') }}</label>
+                <input class="form-control {{ $errors->has('type') ? 'is-invalid' : '' }}" type="text" name="type" id="type" value="{{ old('type', '') }}">
                 @if($errors->has('type'))
                     <div class="invalid-feedback">
                         {{ $errors->first('type') }}
@@ -132,11 +132,8 @@
             </div>
             <div class="form-group">
                 <label class="required" for="fournisseurs">{{ trans('cruds.asset.fields.fournisseur') }}</label>
-                <div style="padding-bottom: 4px">
-                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
-                </div>
-                <select class="form-control select2 {{ $errors->has('fournisseurs') ? 'is-invalid' : '' }}" name="fournisseurs[]" id="fournisseurs" multiple required>
+                <select class="form-control select2 {{ $errors->has('fournisseurs') ? 'is-invalid' : '' }}" name="fournisseurs[]" id="fournisseurs" required>
+                    <option value="">{{ trans('global.pleaseSelect') }}</option>
                     @foreach($fournisseurs as $id => $fournisseur)
                         <option value="{{ $id }}" {{ in_array($id, old('fournisseurs', [])) ? 'selected' : '' }}>{{ $fournisseur }}</option>
                     @endforeach
@@ -150,11 +147,8 @@
             </div>
             <div class="form-group">
                 <label class="required" for="bons">{{ trans('cruds.asset.fields.bon') }}</label>
-                <div style="padding-bottom: 4px">
-                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
-                </div>
-                <select class="form-control select2 {{ $errors->has('bons') ? 'is-invalid' : '' }}" name="bons[]" id="bons" multiple required>
+                <select class="form-control select2 {{ $errors->has('bons') ? 'is-invalid' : '' }}" name="bons[]" id="bons" required>
+                    <option value="">{{ trans('global.pleaseSelect') }}</option>
                     @foreach($bons as $id => $bon)
                         <option value="{{ $id }}" {{ in_array($id, old('bons', [])) ? 'selected' : '' }}>{{ $bon }}</option>
                     @endforeach
@@ -165,16 +159,6 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.asset.fields.bon_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="assigned_to">{{ trans('cruds.asset.fields.assigned_to') }}</label>
-                <input class="form-control {{ $errors->has('assigned_to') ? 'is-invalid' : '' }}" type="text" name="assigned_to" id="assigned_to" value="{{ old('assigned_to', '') }}">
-                @if($errors->has('assigned_to'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('assigned_to') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.asset.fields.assigned_to_helper') }}</span>
             </div>
             <div class="sy-form-actions">
                 <a href="{{ route('admin.assets.index') }}" class="btn btn-default">Annuler</a>
