@@ -295,7 +295,7 @@ table.dataTable tbody tr.selected { background: #dbe7f1 !important; }
 .dash { display: flex; flex-direction: column; gap: 22px; }
 
 .dash-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
-.dash-date { color: var(--sy-muted); font-size: 12.5px; font-weight: 500; margin-bottom: 4px; }
+.dash-date { text-align: right; color: var(--sy-muted); font-size: 12.5px; font-weight: 500; margin-bottom: 4px; }
 .dash-title { font-size: 22px; font-weight: 800; color: var(--sy-navy); letter-spacing: -.02em; margin-bottom: 4px; }
 .dash-sub { color: var(--sy-muted); margin: 0; font-size: 13px; }
 .dash-actions { display: flex; gap: 8px; flex-wrap: wrap; }
