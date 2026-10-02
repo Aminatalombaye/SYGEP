@@ -29,6 +29,7 @@ use App\Services\InventaireService;
 use App\Services\MaintenanceWorkflow;
 use App\Services\Notifier;
 use App\Services\StockService;
+use App\Services\StockVoucherService;
 use App\Support\RoleProfiles;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -377,6 +378,31 @@ class DemoDataSeeder extends Seeder
                 ]);
             }
         }
+
+        // Bons d'entrée et de sortie regroupant plusieurs articles.
+        $vouchers = app(StockVoucherService::class);
+        $byName = fn (string $name) => StockItem::where('name', 'like', $name.'%')->firstOrFail()->id;
+
+        $vouchers->create(
+            ['type' => 'entree', 'moved_at' => now()->subDays(12)->format('Y-m-d'), 'supplier_id' => $baseSupplier, 'document' => 'BL-2026-0412'],
+            [
+                ['stock_item_id' => $byName('Ramette'), 'quantity' => 30, 'unit_price' => 3200],
+                ['stock_item_id' => $byName('Stylos'), 'quantity' => 10, 'unit_price' => 4500],
+                ['stock_item_id' => $byName('Détergent'), 'quantity' => 10, 'unit_price' => 3800, 'expires_at' => now()->addMonths(9)->format('Y-m-d')],
+            ]
+        );
+        $vouchers->create(
+            ['type' => 'sortie', 'moved_at' => now()->subDays(9)->format('Y-m-d'), 'service_id' => $services['cfp_thies']->id, 'agent_id' => $agents[8]->id, 'document' => 'Demande n° 18'],
+            [
+                ['stock_item_id' => $byName('Ramette'), 'quantity' => 5],
+                ['stock_item_id' => $byName('Stylos'), 'quantity' => 3],
+                ['stock_item_id' => $byName('Agrafeuse'), 'quantity' => 1],
+            ]
+        );
+        $vouchers->create(
+            ['type' => 'sortie', 'moved_at' => now()->subDays(4)->format('Y-m-d'), 'service_id' => $services['dsi']->id, 'document' => 'Demande n° 21'],
+            [['stock_item_id' => $byName('Cartouche'), 'quantity' => 2]]
+        );
 
         // Des articles sous le seuil d'alerte (rupture et stock bas) pour tester les alertes.
         $toner = StockItem::where('name', 'Toner HP 85A')->first();

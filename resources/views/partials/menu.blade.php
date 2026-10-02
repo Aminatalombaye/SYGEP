@@ -215,6 +215,14 @@
                             </a>
                         </li>
                     @endcan
+                    @can('stock_movement_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.stock-vouchers.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/stock-vouchers") || request()->is("admin/stock-vouchers/*") ? "c-active" : "" }}">
+                                <i class="bi bi-receipt c-sidebar-nav-icon"></i>
+                                Bons de stock
+                            </a>
+                        </li>
+                    @endcan
                 </ul>
             </li>
         @endcan

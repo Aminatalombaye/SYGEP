@@ -28,7 +28,7 @@ class StockMovementController extends Controller
         $from = $request->date('du') ?? now()->subMonths(3)->startOfMonth();
         $to = $request->date('au') ?? today();
 
-        $movements = StockMovement::with(['item', 'supplier', 'service', 'agent', 'user'])
+        $movements = StockMovement::with(['item', 'supplier', 'service', 'agent', 'user', 'voucher'])
             ->when(array_key_exists((string) $type, StockMovement::TYPES), fn ($q) => $q->where('type', $type))
             ->when($request->integer('article'), fn ($q, $id) => $q->where('stock_item_id', $id))
             ->when($request->integer('service'), fn ($q, $id) => $q->where('service_id', $id))

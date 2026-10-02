@@ -114,6 +114,8 @@ body.c-app {
     color: var(--sy-muted-2) !important;
 }
 .c-sidebar .c-sidebar-nav-dropdown-items .c-sidebar-nav-icon { width: 26px; flex-basis: 26px; font-size: 14px; }
+.c-sidebar .c-sidebar-nav-dropdown-items .c-sidebar-nav-link.c-active { color: #fff !important; }
+.c-sidebar .c-sidebar-nav-dropdown-items .c-sidebar-nav-link.c-active .c-sidebar-nav-icon { color: #fff !important; }
 
 .c-sidebar .badge { font-size: 12px; padding: 3px 8px; border-radius: 999px; }
 
