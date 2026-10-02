@@ -21,6 +21,7 @@ class StockMovement extends Model
     protected $fillable = [
         'reference',
         'stock_item_id',
+        'voucher_id',
         'type',
         'quantity',
         'balance_after',
@@ -58,6 +59,11 @@ class StockMovement extends Model
         $next = $last ? ((int) substr($last, strlen($prefix))) + 1 : 1;
 
         return $prefix.str_pad((string) $next, 5, '0', STR_PAD_LEFT);
+    }
+
+    public function voucher()
+    {
+        return $this->belongsTo(StockVoucher::class, 'voucher_id');
     }
 
     public function item()

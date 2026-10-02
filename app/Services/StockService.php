@@ -46,6 +46,7 @@ class StockService
             $movement = StockMovement::create([
                 'reference'     => StockMovement::nextReference(),
                 'stock_item_id' => $item->id,
+                'voucher_id'    => $data['voucher_id'] ?? null,
                 'type'          => $type,
                 'quantity'      => $moved,
                 'balance_after' => $after,

@@ -123,6 +123,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('stock-items/destroy', 'StockItemController@massDestroy')->name('stock-items.massDestroy');
     Route::resource('stock-items', 'StockItemController');
     Route::resource('stock-movements', 'StockMovementController', ['only' => ['index', 'create', 'store']]);
+    Route::get('stock-vouchers/{stock_voucher}/bon', 'StockVoucherController@bon')->name('stock-vouchers.print');
+    Route::resource('stock-vouchers', 'StockVoucherController', ['only' => ['index', 'create', 'store', 'show']]);
 
     // Rapports périodiques
     Route::get('rapports-periodiques', 'PeriodicReportController@index')->name('periodic-reports.index');

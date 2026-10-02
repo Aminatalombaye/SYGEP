@@ -12,6 +12,7 @@
     </div>
     <div class="page-actions">
         <a href="{{ route('admin.stock-items.index') }}" class="btn btn-default"><i class="bi bi-box2"></i> Articles</a>
+        <a href="{{ route('admin.stock-vouchers.index') }}" class="btn btn-default"><i class="bi bi-receipt"></i> Bons de stock</a>
         @can('stock_movement_create')
             <a href="{{ route('admin.stock-movements.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouveau mouvement</a>
         @endcan
@@ -76,6 +77,7 @@
                         <th>Mouvement</th>
                         <th>Solde après</th>
                         <th>Fournisseur / bénéficiaire</th>
+                        <th>Bon</th>
                         <th>Pièce</th>
                         <th>Saisi par</th>
                     </tr>
@@ -97,6 +99,7 @@
                             </td>
                             <td>{{ \App\Support\Fmt::qty($m->balance_after) }}</td>
                             <td class="muted">{{ $m->party }}</td>
+                            <td class="nowrap">@if($m->voucher)<a href="{{ route('admin.stock-vouchers.show', $m->voucher) }}">{{ $m->voucher->reference }}</a>@else<span class="muted">—</span>@endif</td>
                             <td class="muted">{{ $m->document ?: '—' }}</td>
                             <td class="muted">{{ $m->user->name ?? '—' }}</td>
                         </tr>
