@@ -62,7 +62,7 @@ class StockVoucherController extends Controller
             'type'                    => ['required', Rule::in(array_keys(StockVoucher::TYPES))],
             'moved_at'                => ['required', 'date', 'before_or_equal:today'],
             'supplier_id'             => ['nullable', 'integer', 'exists:suppliers,id'],
-            'service_id'              => ['nullable', 'required_if:type,sortie', 'integer', 'exists:services,id'],
+            'service_id'              => [Rule::requiredIf(fn () => $request->input('type') === 'sortie' && ! $request->filled('agent_id')), 'nullable', 'integer', 'exists:services,id'],
             'agent_id'                => ['nullable', 'integer', 'exists:agents,id'],
             'document'                => ['nullable', 'string', 'max:255'],
             'notes'                   => ['nullable', 'string', 'max:2000'],
@@ -72,7 +72,7 @@ class StockVoucherController extends Controller
             'lines.*.unit_price'      => ['nullable', 'numeric', 'min:0'],
             'lines.*.expires_at'      => ['nullable', 'date', 'after:moved_at'],
         ], [
-            'service_id.required_if'         => 'Indiquez le service bénéficiaire du bon de sortie.',
+            'service_id.required'            => 'Indiquez le service bénéficiaire du bon de sortie (ou l\'agent demandeur).',
             'moved_at.before_or_equal'       => 'La date du bon ne peut pas être dans le futur.',
             'lines.required'                 => 'Ajoutez au moins un article au bon.',
             'lines.min'                      => 'Ajoutez au moins un article au bon.',

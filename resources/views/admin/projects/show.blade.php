@@ -103,7 +103,7 @@
                     <div class="empty-state"><i class="bi bi-signpost-split"></i> Aucun jalon. Ajoutez les grandes étapes : études, gros œuvre, second œuvre, réception…</div>
                 @else
                     <div class="table-responsive">
-                        <table class="dash-table">
+                        <div class="table-responsive"><table class="dash-table">
                             <thead><tr><th></th><th>Jalon</th><th>Échéance</th><th>Intervenant</th><th>Poids</th><th></th></tr></thead>
                             <tbody>
                                 @foreach($project->milestones as $m)
@@ -143,7 +143,7 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table>
+                        </table></div>
                     </div>
                 @endif
             </div>
@@ -203,7 +203,7 @@
                 @if($project->reports->isEmpty())
                     <div class="empty-state"><i class="bi bi-file-earmark-text"></i> Aucun rapport rattaché.</div>
                 @else
-                    <table class="dash-table">
+                    <div class="table-responsive"><table class="dash-table">
                         <tbody>
                             @foreach($project->reports->sortByDesc('report_date') as $report)
                                 <tr>
@@ -212,7 +212,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table></div>
                 @endif
             </div>
         </section>
@@ -258,7 +258,7 @@
                 @if($project->intervenants->isEmpty())
                     <div class="empty-state"><i class="bi bi-people"></i> Aucun intervenant : entreprise, bureau d'études, contrôle…</div>
                 @else
-                    <table class="dash-table">
+                    <div class="table-responsive"><table class="dash-table">
                         <tbody>
                             @foreach($project->intervenants as $i)
                                 <tr>
@@ -283,7 +283,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table></div>
                 @endif
             </div>
             @if($canEdit && $intervenants->isNotEmpty())

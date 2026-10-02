@@ -3,7 +3,8 @@
 return [
     'date_format'         => 'Y-m-d',
     'time_format'         => 'H:i:s',
-    'registration_default_role' => '2',
+    // Nom du rôle donné aux comptes créés sans rôle (inscription libre). Doit rester un rôle sans droits sensibles.
+    'registration_default_role' => 'User',
 
     'contact' => [
         'organisation' => "Ministère de l'Emploi et de la Formation Professionnelle et Technique",

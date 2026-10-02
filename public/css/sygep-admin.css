@@ -392,10 +392,10 @@ a.kpi[href]:hover { border-color: #c9d7e6; box-shadow: 0 10px 24px -16px rgba(26
     .panel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 768px) {
-    .panel-grid-2 { grid-template-columns: 1fr; }
+    .panel-grid-2 { grid-template-columns: minmax(0, 1fr); }
     .c-main > .container-fluid { padding-left: 14px; padding-right: 14px; }
     .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .panel-grid { grid-template-columns: 1fr; }
+    .panel-grid { grid-template-columns: minmax(0, 1fr); }
     .dash-title { font-size: 24px; }
     .sy-search { display: none; }
     .kpi { padding: 14px; }
@@ -418,6 +418,7 @@ a.kpi[href]:hover { border-color: #c9d7e6; box-shadow: 0 10px 24px -16px rgba(26
 .sy-card-body.flush { padding: 0; }
 
 .sy-grid-2 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.sy-grid-2 > * { min-width: 0; }
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; }
 .form-grid .full { grid-column: 1 / -1; }
 .form-grid .form-group { margin-bottom: 0; }
@@ -477,11 +478,11 @@ a.kpi[href]:hover { border-color: #c9d7e6; box-shadow: 0 10px 24px -16px rgba(26
 .empty-state .bi { font-size: 32px; display: block; margin-bottom: 8px; color: #b6c2d1; }
 
 @media (max-width: 1100px) {
-    .sy-grid-2 { grid-template-columns: 1fr; }
+    .sy-grid-2 { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 768px) {
-    .form-grid { grid-template-columns: 1fr; }
-    .dl { grid-template-columns: 1fr; gap: 2px 0; }
+    .form-grid { grid-template-columns: minmax(0, 1fr); }
+    .dl { grid-template-columns: minmax(0, 1fr); gap: 2px 0; }
     .dl dd { margin-bottom: 8px; }
 }
 
@@ -526,7 +527,7 @@ a.kpi[href]:hover { border-color: #c9d7e6; box-shadow: 0 10px 24px -16px rgba(26
     .kpi-grid.kpi-auto { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 520px) {
-    .kpi-grid.kpi-auto { grid-template-columns: 1fr; }
+    .kpi-grid.kpi-auto { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* Icônes */
@@ -668,8 +669,8 @@ div.dt-button-background { background: transparent !important; }
 .card .tab-content { padding: 18px; }
 
 @media (max-width: 900px) {
-    .sy-form-grid { grid-template-columns: 1fr; }
-    .table.sy-details tbody tr { grid-template-columns: 1fr; }
+    .sy-form-grid { grid-template-columns: minmax(0, 1fr); }
+    .table.sy-details tbody tr { grid-template-columns: minmax(0, 1fr); }
     .table.sy-details th { padding-bottom: 0 !important; }
 }
 
@@ -753,7 +754,7 @@ div.dt-button-background { background: transparent !important; }
 .audience-option input:focus-visible + span { outline: 3px solid var(--sy-blue); outline-offset: 2px; }
 .read-bar { width: 110px; height: 6px; border-radius: 999px; background: var(--sy-line-soft); overflow: hidden; margin-bottom: 3px; }
 .read-bar span { display: block; height: 100%; background: var(--sy-good); border-radius: 999px; }
-@media (max-width: 768px) { .audience-choice { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .audience-choice { grid-template-columns: minmax(0, 1fr); } }
 .sy-notifs-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .sy-notifs-head form { margin: 0; }
 .sy-link-btn { background: none; border: 0; padding: 0; font: inherit; font-size: 13.5px; font-weight: 600; color: var(--sy-blue); cursor: pointer; }
@@ -888,3 +889,23 @@ div.dt-button-background { background: transparent !important; }
 .role-users .sy-avatar { width: 36px; height: 36px; font-size: 15px; flex-shrink: 0; }
 .role-users .strong { display: block; }
 .role-users .muted { display: block; font-size: 13px; }
+
+/* Select2 : le <select> d'origine reste masqué et ne doit jamais élargir la page (défilement horizontal sur mobile). */
+.form-group select.select2-hidden-accessible,
+.card select.select2-hidden-accessible,
+select.select2-hidden-accessible { width: 1px !important; height: 1px !important; min-width: 0 !important; }
+
+/* Frise d'étapes : les libellés longs passent à la ligne au lieu d'élargir la page (téléphone). */
+.sy-steps li { min-width: 0; }
+.sy-steps .lbl { overflow-wrap: anywhere; }
+@media (max-width: 575px) { .sy-steps li { font-size: 11px; } }
+
+/* Tableaux des fiches : défilement horizontal interne plutôt qu'un élargissement de la page (téléphone). */
+@media (max-width: 768px) {
+    table.dash-table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+
+/* Formulaires en grille dont les colonnes sont fixées dans la page : une seule colonne sur téléphone. */
+@media (max-width: 575px) {
+    .form-grid[style*="grid-template-columns"], .form-grid[style*="grid-template"] { grid-template-columns: minmax(0, 1fr) !important; }
+}

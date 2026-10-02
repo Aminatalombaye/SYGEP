@@ -7,35 +7,21 @@ use Illuminate\Database\Seeder;
 
 class AssetStatusTableSeeder extends Seeder
 {
+    /** Nom français => noms équivalents d'une ancienne installation. */
+    private const STATUSES = [
+        'Disponible'     => ['Available'],
+        'Pas disponible' => ['Not Available'],
+        'En panne'       => ['Broken'],
+        'En réparation'  => ['Out for Repair'],
+        'Affecté'        => ['Assigned', 'Assigner'],
+    ];
+
     public function run()
     {
-        $assetStatuses = [
-            [
-                'id'         => 1,
-                'name'       => 'Available',
-                'created_at' => '2024-08-04 01:22:42',
-                'updated_at' => '2024-08-04 01:22:42',
-            ],
-            [
-                'id'         => 2,
-                'name'       => 'Not Available',
-                'created_at' => '2024-08-04 01:22:42',
-                'updated_at' => '2024-08-04 01:22:42',
-            ],
-            [
-                'id'         => 3,
-                'name'       => 'Broken',
-                'created_at' => '2024-08-04 01:22:42',
-                'updated_at' => '2024-08-04 01:22:42',
-            ],
-            [
-                'id'         => 4,
-                'name'       => 'Out for Repair',
-                'created_at' => '2024-08-04 01:22:42',
-                'updated_at' => '2024-08-04 01:22:42',
-            ],
-        ];
-
-        AssetStatus::insert($assetStatuses);
+        foreach (self::STATUSES as $name => $alternatives) {
+            if (! AssetStatus::whereIn('name', array_merge([$name], $alternatives))->exists()) {
+                AssetStatus::create(['name' => $name]);
+            }
+        }
     }
 }
