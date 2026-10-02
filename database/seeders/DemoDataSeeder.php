@@ -7,7 +7,6 @@ use App\Models\Asset;
 use App\Models\AssetCategory;
 use App\Models\AssetLocation;
 use App\Models\AssetStatus;
-use App\Models\Assignment;
 use App\Models\Bon;
 use App\Models\ChefProjet;
 use App\Models\Infrastructure;
@@ -31,6 +30,7 @@ use App\Services\MaintenanceWorkflow;
 use App\Services\Notifier;
 use App\Services\StockService;
 use App\Support\RoleProfiles;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -42,7 +42,6 @@ use Illuminate\Support\Facades\Hash;
  *   php artisan db:seed --class=DemoDataSeeder
  *
  * Les comptes de démonstration ont tous le mot de passe « password ».
- * Le seeder ne s'exécute qu'une fois : il s'arrête s'il détecte déjà ses données.
  */
 class DemoDataSeeder extends Seeder
 {
@@ -92,10 +91,10 @@ class DemoDataSeeder extends Seeder
     private function services(): array
     {
         $names = [
-            'dage'     => self::MARKER_SERVICE,
-            'dfp'      => 'Direction de la Formation Professionnelle',
-            'examens'  => 'Direction des Examens et Concours',
-            'dsi'      => 'Cellule informatique',
+            'dage' => self::MARKER_SERVICE,
+            'dfp' => 'Direction de la Formation Professionnelle',
+            'examens' => 'Direction des Examens et Concours',
+            'dsi' => 'Cellule informatique',
             'cfp_thies' => 'CFP de Thiès',
             'cfp_kaff' => 'CFP de Kaffrine',
         ];
@@ -119,10 +118,10 @@ class DemoDataSeeder extends Seeder
 
         foreach ($accounts as [$key, $name, $email, $roleTitle, $service]) {
             $user = User::create([
-                'name'       => $name,
-                'email'      => $email,
-                'password'   => Hash::make('password'),
-                'approved'   => 1,
+                'name' => $name,
+                'email' => $email,
+                'password' => Hash::make('password'),
+                'approved' => 1,
                 'service_id' => $service ? $services[$service]->id : null,
             ]);
 
@@ -144,12 +143,12 @@ class DemoDataSeeder extends Seeder
         ])->mapWithKeys(fn ($n) => [$n => AssetCategory::create(['name' => $n])])->all();
 
         $locations = collect([
-            'siege'   => 'Siège — Bureaux DAGE',
+            'siege' => 'Siège — Bureaux DAGE',
             'serveur' => 'Siège — Salle serveur',
             'magasin' => 'Magasin central',
             'thies_a' => 'CFP de Thiès — Atelier',
             'thies_i' => 'CFP de Thiès — Salle informatique',
-            'kaff'    => 'CFP de Kaffrine — Administration',
+            'kaff' => 'CFP de Kaffrine — Administration',
         ])->map(fn ($n) => AssetLocation::create(['name' => $n]))->all();
 
         $suppliers = collect([
@@ -165,23 +164,23 @@ class DemoDataSeeder extends Seeder
             ['BC-2026-011', 'Technopro Atelier', 8, 'Ibrahima Sow'],
         ] as $i => [$ref, $org, $daysAgo, $dest]) {
             $bons[$i] = Bon::create([
-                'date_emission'      => now()->subDays($daysAgo + 20)->format('Y-m-d'),
-                'organisation'       => $org,
+                'date_emission' => now()->subDays($daysAgo + 20)->format('Y-m-d'),
+                'organisation' => $org,
                 'reference_commande' => $ref,
-                'nom_destinataire'   => $dest,
-                'bon'                => 'BL-'.substr($ref, 3),
-                'date_livraison'     => now()->subDays($daysAgo)->format('Y-m-d'),
+                'nom_destinataire' => $dest,
+                'bon' => 'BL-'.substr($ref, 3),
+                'date_livraison' => now()->subDays($daysAgo)->format('Y-m-d'),
             ]);
         }
 
         // Un bon encore en attente de livraison.
         $bons[] = Bon::create([
-            'date_emission'      => now()->subDays(5)->format('Y-m-d'),
-            'organisation'       => 'Technopro Atelier',
+            'date_emission' => now()->subDays(5)->format('Y-m-d'),
+            'organisation' => 'Technopro Atelier',
             'reference_commande' => 'BC-2026-019',
-            'nom_destinataire'   => 'Ibrahima Sow',
-            'bon'                => 'BL-2026-019',
-            'date_livraison'     => null,
+            'nom_destinataire' => 'Ibrahima Sow',
+            'bon' => 'BL-2026-019',
+            'date_livraison' => null,
         ]);
 
         return compact('categories', 'locations', 'suppliers', 'bons');
@@ -196,11 +195,11 @@ class DemoDataSeeder extends Seeder
         ];
 
         return collect($rows)->map(fn ($r, $i) => Agent::create([
-            'nom'        => $r[0],
-            'prenom'     => $r[1],
-            'adresse'    => 'Dakar, Sénégal',
-            'email'      => strtolower($r[1].'.'.$r[0]).'@mefpt.test',
-            'telephone'  => '77 '.str_pad((string) (100 + $i * 7), 3, '0').' '.str_pad((string) (10 + $i), 2, '0').' '.str_pad((string) (20 + $i), 2, '0'),
+            'nom' => $r[0],
+            'prenom' => $r[1],
+            'adresse' => 'Dakar, Sénégal',
+            'email' => strtolower($r[1].'.'.$r[0]).'@mefpt.test',
+            'telephone' => '77 '.str_pad((string) (100 + $i * 7), 3, '0').' '.str_pad((string) (10 + $i), 2, '0').' '.str_pad((string) (20 + $i), 2, '0'),
             'service_id' => $services[$r[2]]->id,
         ]))->all();
     }
@@ -259,15 +258,15 @@ class DemoDataSeeder extends Seeder
             $bought = now()->subMonths($monthsAgo)->subDays(($i * 3) % 20);
 
             $asset = Asset::create([
-                'category_id'          => $cat[$category]->id,
-                'serial_number'        => in_array($category, ['Mobilier de bureau'], true) ? null : strtoupper(substr($key, 0, 3)).'-'.(2024 + $i % 3).'-'.str_pad((string) (1000 + $i * 13), 5, '0', STR_PAD_LEFT),
-                'name'                 => $name,
-                'status_id'            => $available,
-                'location_id'          => $loc[$location]->id,
-                'type'                 => $category,
-                'date_achat'           => $bought->format('Y-m-d'),
+                'category_id' => $cat[$category]->id,
+                'serial_number' => in_array($category, ['Mobilier de bureau'], true) ? null : strtoupper(substr($key, 0, 3)).'-'.(2024 + $i % 3).'-'.str_pad((string) (1000 + $i * 13), 5, '0', STR_PAD_LEFT),
+                'name' => $name,
+                'status_id' => $available,
+                'location_id' => $loc[$location]->id,
+                'type' => $category,
+                'date_achat' => $bought->format('Y-m-d'),
                 'date_mise_en_service' => $bought->copy()->addDays(10)->format('Y-m-d'),
-                'modele'               => $model,
+                'modele' => $model,
             ]);
             $asset->fournisseurs()->sync([$sup[$supplier]->id]);
             $asset->bons()->sync([$bons[$bon]->id]);
@@ -334,25 +333,25 @@ class DemoDataSeeder extends Seeder
 
         foreach ($items as $i => [$name, $category, $unit, $min, , $price, $perishable, $initial]) {
             $item = StockItem::create([
-                'reference'    => StockItem::nextReference(),
-                'name'         => $name,
-                'category'     => $category,
-                'unit'         => $unit,
-                'quantity'     => 0,
+                'reference' => StockItem::nextReference(),
+                'name' => $name,
+                'category' => $category,
+                'unit' => $unit,
+                'quantity' => 0,
                 'min_quantity' => $min,
-                'unit_price'   => $price,
-                'perishable'   => $perishable,
-                'location_id'  => $locations['magasin']->id,
-                'supplier_id'  => $baseSupplier,
+                'unit_price' => $price,
+                'perishable' => $perishable,
+                'location_id' => $locations['magasin']->id,
+                'supplier_id' => $baseSupplier,
             ]);
 
             $stock->record($item, 'entree', $initial, [
-                'moved_at'    => now()->subMonths(5)->format('Y-m-d'),
+                'moved_at' => now()->subMonths(5)->format('Y-m-d'),
                 'supplier_id' => $baseSupplier,
-                'unit_price'  => $price,
-                'document'    => 'BL-STOCK-INIT-'.($i + 1),
-                'expires_at'  => $perishable ? now()->addMonths(10)->format('Y-m-d') : null,
-                'notes'       => 'Stock initial',
+                'unit_price' => $price,
+                'document' => 'BL-STOCK-INIT-'.($i + 1),
+                'expires_at' => $perishable ? now()->addMonths(10)->format('Y-m-d') : null,
+                'notes' => 'Stock initial',
             ]);
 
             // Sorties étalées sur 5 mois, vers différents services.
@@ -360,21 +359,21 @@ class DemoDataSeeder extends Seeder
                 $qty = max(1, (int) round($initial * (0.08 + 0.02 * (($i + $k) % 4))));
                 $target = array_values($services)[($i + $k) % count($services)];
                 $stock->record($item->fresh(), 'sortie', $qty, [
-                    'moved_at'   => now()->subMonths($monthsAgo)->subDays(2)->format('Y-m-d'),
+                    'moved_at' => now()->subMonths($monthsAgo)->subDays(2)->format('Y-m-d'),
                     'service_id' => $target->id,
-                    'agent_id'   => $agents[($i + $k) % count($agents)]->id,
-                    'document'   => 'BS-'.now()->subMonths($monthsAgo)->format('Ym').'-'.($i + 1).$k,
+                    'agent_id' => $agents[($i + $k) % count($agents)]->id,
+                    'document' => 'BS-'.now()->subMonths($monthsAgo)->format('Ym').'-'.($i + 1).$k,
                 ]);
             }
 
             // Réapprovisionnement ponctuel.
             if ($i % 3 === 0) {
                 $stock->record($item->fresh(), 'entree', (int) round($initial * 0.4), [
-                    'moved_at'    => now()->subMonths(2)->format('Y-m-d'),
+                    'moved_at' => now()->subMonths(2)->format('Y-m-d'),
                     'supplier_id' => $baseSupplier,
-                    'unit_price'  => $price,
-                    'document'    => 'BL-STOCK-REAP-'.($i + 1),
-                    'expires_at'  => $perishable ? now()->addMonths(8)->format('Y-m-d') : null,
+                    'unit_price' => $price,
+                    'document' => 'BL-STOCK-REAP-'.($i + 1),
+                    'expires_at' => $perishable ? now()->addMonths(8)->format('Y-m-d') : null,
                 ]);
             }
         }
@@ -454,16 +453,16 @@ class DemoDataSeeder extends Seeder
 
         foreach ($projects as [$name, $type, $status, $start, $end, $budget, $spent, $infraIds, $chefIds, $milestones]) {
             $project = Project::create([
-                'reference'     => Project::nextReference(),
-                'name'          => $name,
-                'type'          => $type,
-                'description'   => 'Projet de démonstration : '.$name.'.',
-                'status'        => $status,
-                'start_date'    => $start->format('Y-m-d'),
-                'end_date'      => $end->format('Y-m-d'),
-                'budget'        => $budget,
-                'spent'         => $spent,
-                'progress'      => $status === 'termine' ? 100 : 0,
+                'reference' => Project::nextReference(),
+                'name' => $name,
+                'type' => $type,
+                'description' => 'Projet de démonstration : '.$name.'.',
+                'status' => $status,
+                'start_date' => $start->format('Y-m-d'),
+                'end_date' => $end->format('Y-m-d'),
+                'budget' => $budget,
+                'spent' => $spent,
+                'progress' => $status === 'termine' ? 100 : 0,
                 'created_by_id' => $admin->id,
             ]);
             $project->infrastructures()->sync($infraIds);
@@ -471,13 +470,13 @@ class DemoDataSeeder extends Seeder
 
             foreach ($milestones as $p => [$title, $state, $weight, $done]) {
                 ProjectMilestone::create([
-                    'project_id'     => $project->id,
-                    'title'          => $title,
-                    'due_date'       => $state === 'late' ? now()->subDays(20)->format('Y-m-d') : $start->copy()->addMonths($p + 1)->format('Y-m-d'),
-                    'weight'         => $weight,
-                    'done_at'        => $done ? $start->copy()->addMonths($p)->addDays(15) : null,
+                    'project_id' => $project->id,
+                    'title' => $title,
+                    'due_date' => $state === 'late' ? now()->subDays(20)->format('Y-m-d') : $start->copy()->addMonths($p + 1)->format('Y-m-d'),
+                    'weight' => $weight,
+                    'done_at' => $done ? $start->copy()->addMonths($p)->addDays(15) : null,
                     'intervenant_id' => $intervenants[$p % 3]->id,
-                    'position'       => $p + 1,
+                    'position' => $p + 1,
                 ]);
             }
 
@@ -630,7 +629,7 @@ class DemoDataSeeder extends Seeder
     private function history(array $assets): void
     {
         foreach ($assets as $asset) {
-            $created = $asset->date_achat ? \Carbon\Carbon::parse($asset->date_achat)->addDays(2) : now();
+            $created = $asset->date_achat ? Carbon::parse($asset->date_achat)->addDays(2) : now();
             DB::table('assets')->where('id', $asset->id)->update(['created_at' => $created, 'updated_at' => $created]);
             DB::table('assets_histories')->where('asset_id', $asset->id)->where('action', 'creation')->update(['created_at' => $created, 'updated_at' => $created]);
         }
