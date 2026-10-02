@@ -2,24 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
+use App\Support\RoleProfiles;
 use Illuminate\Database\Seeder;
 
+/**
+ * Crée les rôles métier (Super administrateur, Directeur, comptables, etc.) avec leurs droits.
+ */
 class RolesTableSeeder extends Seeder
 {
     public function run()
     {
-        $roles = [
-            [
-                'id'    => 1,
-                'title' => 'Admin',
-            ],
-            [
-                'id'    => 2,
-                'title' => 'User',
-            ],
-        ];
-
-        Role::insert($roles);
+        RoleProfiles::apply();
     }
 }

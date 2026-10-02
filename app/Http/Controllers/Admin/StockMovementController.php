@@ -75,7 +75,7 @@ class StockMovementController extends Controller
             'quantity'      => ['required', 'numeric', 'min:0'],
             'moved_at'      => ['required', 'date', 'before_or_equal:today'],
             'supplier_id'   => ['nullable', 'integer', 'exists:suppliers,id'],
-            'service_id'    => ['nullable', 'required_if:type,sortie', 'integer', 'exists:services,id'],
+            'service_id'    => ['nullable', Rule::requiredIf(fn () => $request->input('type') === 'sortie' && ! $request->filled('agent_id')), 'integer', 'exists:services,id'],
             'agent_id'      => ['nullable', 'integer', 'exists:agents,id'],
             'document'      => ['nullable', 'string', 'max:255'],
             'unit_price'    => ['nullable', 'numeric', 'min:0'],
@@ -83,7 +83,7 @@ class StockMovementController extends Controller
             'notes'         => ['nullable', 'required_if:type,ajustement', 'string', 'max:2000'],
             'retour'        => ['nullable', 'string'],
         ], [
-            'service_id.required_if' => 'Indiquez le service bénéficiaire de la sortie.',
+            'service_id.required' => 'Indiquez le service bénéficiaire de la sortie (ou l\'agent demandeur).',
             'notes.required_if'      => 'Expliquez l\'écart constaté (comptage, casse, péremption…).',
             'moved_at.before_or_equal' => 'La date du mouvement ne peut pas être dans le futur.',
         ]);

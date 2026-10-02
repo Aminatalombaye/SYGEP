@@ -24,7 +24,10 @@ class AffectationService
     public function assign(array $data, array $assetIds, string $action = 'affectation'): Assignment
     {
         return DB::transaction(function () use ($data, $assetIds, $action) {
-            $assets = $this->lockAssets($assetIds);
+            // Pour un transfert, la matière a déjà été autorisée à l'ouverture de l'écran (elle est dans le
+            // périmètre du compte) ; elle vient d'être libérée de son service, donc le filtre par service
+            // ne doit plus la masquer ici. Le bon créé reste, lui, limité au service du compte.
+            $assets = $this->lockAssets($assetIds, $action === 'transfert');
             $this->ensureAssignable($assets);
 
             $agent = ! empty($data['agent_id']) ? Agent::findOrFail($data['agent_id']) : null;
@@ -182,7 +185,7 @@ class AffectationService
         });
     }
 
-    private function lockAssets(array $assetIds): Collection
+    private function lockAssets(array $assetIds, bool $ignorePerimeter = false): Collection
     {
         $ids = array_values(array_unique(array_map('intval', $assetIds)));
 
@@ -192,7 +195,9 @@ class AffectationService
             ]);
         }
 
-        $assets = Asset::whereIn('id', $ids)->lockForUpdate()->get();
+        $query = $ignorePerimeter ? Asset::withoutGlobalScope('perimetre') : Asset::query();
+
+        $assets = $query->whereIn('id', $ids)->lockForUpdate()->get();
 
         if ($assets->count() !== count($ids)) {
             throw ValidationException::withMessages([

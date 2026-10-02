@@ -72,7 +72,11 @@ class StockService
 
             $movement->setRelation('item', $item);
 
-            return [$movement, $before > (float) $item->min_quantity && $after <= (float) $item->min_quantity];
+            // Alerte au franchissement du seuil, et aussi quand le stock tombe à zéro même s'il était déjà bas.
+            $crossed = ($before > (float) $item->min_quantity && $after <= (float) $item->min_quantity)
+                || ($before > 0 && $after <= 0);
+
+            return [$movement, $crossed];
         });
 
         if ($crossed) {

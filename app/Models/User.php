@@ -59,8 +59,10 @@ class User extends Authenticatable
     {
         parent::__construct($attributes);
         self::created(function (self $user) {
-            $registrationRole = config('panel.registration_default_role');
-            if (! $user->roles()->get()->contains($registrationRole)) {
+            // Rôle de départ des comptes créés sans rôle (inscription libre) : désigné par son nom,
+            // jamais par son numéro, qui change d'une installation à l'autre.
+            $registrationRole = Role::where('title', config('panel.registration_default_role'))->value('id');
+            if ($registrationRole && ! $user->roles()->where('roles.id', $registrationRole)->exists()) {
                 $user->roles()->attach($registrationRole);
             }
         });

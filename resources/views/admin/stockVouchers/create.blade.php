@@ -60,6 +60,7 @@
                         @endforeach
                     </select>
                     @error('service_id')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                    <span class="hint">Ou choisissez seulement l'agent demandeur : son service est alors repris.</span>
                 </div>
                 <div class="form-group" data-show="sortie">
                     <label for="agent_id">Agent demandeur</label>
