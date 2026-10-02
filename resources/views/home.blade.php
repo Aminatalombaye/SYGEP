@@ -26,9 +26,9 @@
 @endphp
 
 <div class="dash">
+    <p class="dash-date">{{ ucfirst(now()->locale('fr')->translatedFormat('l j F Y')) }}</p>
     <div class="dash-head">
         <div>
-            <p class="dash-date">{{ ucfirst(now()->locale('fr')->translatedFormat('l j F Y')) }}</p>
             <h1 class="dash-title">{{ $greeting }}, {{ \Illuminate\Support\Str::of($user->name)->before(' ') }}</h1>
             <p class="dash-sub">Voici l'état du patrimoine matériel du MEFPT aujourd'hui.</p>
         </div>
