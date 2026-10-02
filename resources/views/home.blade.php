@@ -53,7 +53,11 @@
         @endcan
     @endif
 
-    <div class="kpi-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))">
+    @php
+        $tileCount = count($tiles);
+        $tileCols = $tileCount <= 4 ? max($tileCount, 1) : ($tileCount % 4 === 0 ? 4 : ($tileCount % 3 === 0 ? 3 : 4));
+    @endphp
+    <div class="kpi-grid kpi-auto kpi-uniform" style="--kpi-cols: {{ $tileCols }}">
         @foreach($tiles as $t)
             @php($canSee = \Illuminate\Support\Facades\Gate::allows($t['can']))
             <a @if($canSee) href="{{ route($t['route'], $t['params'] ?? []) }}" @endif class="kpi {{ !empty($t['tone']) ? 'kpi-'.$t['tone'] : '' }} {{ $canSee ? '' : 'kpi-static' }}">
