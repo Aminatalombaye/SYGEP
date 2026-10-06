@@ -16,16 +16,16 @@
         .gov { line-height: 1.5; }
         .gov em { color: #64748b; }
         .logo img { height: 44px; }
-        h1 { text-align: center; font-size: 19px; letter-spacing: .06em; text-transform: uppercase; color: #1a3a5c; margin: 22px 0 4px; }
+        h1 { text-align: center; font-size: 19px; letter-spacing: .06em; text-transform: uppercase; color: #c2610f; margin: 22px 0 4px; }
         .ref { text-align: center; color: #64748b; margin-bottom: 18px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
         .box { border: 1px solid #dfe5ec; border-radius: 8px; padding: 10px 12px; line-height: 1.6; }
         .box h2 { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: #64748b; margin-bottom: 6px; }
         .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 18px; }
         .kpi { border: 1px solid #dfe5ec; border-radius: 8px; padding: 8px; text-align: center; }
-        .kpi strong { display: block; font-size: 18px; color: #1a3a5c; }
+        .kpi strong { display: block; font-size: 18px; color: #c2610f; }
         .kpi span { font-size: 10px; color: #64748b; }
-        h3 { font-size: 13px; color: #1a3a5c; margin: 16px 0 8px; }
+        h3 { font-size: 13px; color: #c2610f; margin: 16px 0 8px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { border: 1px solid #dfe5ec; padding: 5px 7px; text-align: left; vertical-align: top; }
         th { background: #f4f7fa; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; color: #475569; }
@@ -34,7 +34,7 @@
         .sign { border-top: 1px solid #94a3b8; padding-top: 8px; min-height: 80px; }
         .foot { margin-top: 26px; font-size: 10px; color: #94a3b8; text-align: center; }
         .toolbar { text-align: center; margin: 18px 0 0; }
-        .toolbar button { font: inherit; font-weight: 600; background: #1a3a5c; color: #fff; border: 0; border-radius: 8px; padding: 10px 18px; cursor: pointer; font-size: 14px; }
+        .toolbar button { font: inherit; font-weight: 600; background: #c2610f; color: #fff; border: 0; border-radius: 8px; padding: 10px 18px; cursor: pointer; font-size: 14px; }
         @media print {
             body { background: #fff; }
             .sheet { margin: 0; box-shadow: none; width: auto; min-height: 0; padding: 0; }

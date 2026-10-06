@@ -5,7 +5,7 @@
         .auth-section { padding: 64px 0 88px; background: linear-gradient(180deg, #ffffff 0%, #f8fbfd 100%); }
         .auth-card {
             max-width: 480px; margin: 0 auto; background: #fff; border: 1px solid var(--line);
-            border-radius: 24px; padding: 44px 44px 36px; box-shadow: 0 30px 60px -30px rgba(26,58,92,.25);
+            border-radius: 24px; padding: 44px 44px 36px; box-shadow: 0 30px 60px -30px rgba(194,97,15,.25);
         }
         .auth-card .auth-icon {
             width: 56px; height: 56px; border-radius: 16px; background: var(--tint); color: var(--navy);
@@ -23,7 +23,7 @@
             width: 100%; padding: 14px 16px 14px 46px; border: 1px solid var(--line); border-radius: 12px;
             font: inherit; font-size: 15px; color: var(--text); background: #fbfcfe; transition: border-color .2s, box-shadow .2s;
         }
-        .input-icon input:focus { outline: none; border-color: var(--navy); background: #fff; box-shadow: 0 0 0 4px rgba(26,58,92,.12); }
+        .input-icon input:focus { outline: none; border-color: var(--navy); background: #fff; box-shadow: 0 0 0 4px rgba(194,97,15,.12); }
         .field.has-error input { border-color: #e31b23; }
         .field .error { color: #c81e25; font-size: 13px; margin-top: 6px; display: flex; gap: 6px; align-items: center; }
         .btn-block { width: 100%; justify-content: center; margin-top: 6px; }

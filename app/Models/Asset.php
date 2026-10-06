@@ -103,7 +103,7 @@ class Asset extends Model implements HasMedia
             ->size($size)
             ->margin(1)
             ->errorCorrection('M')
-            ->color(26, 58, 92)
+            ->color(194,97,15)
             ->generate($this->scan_url);
 
         return new \Illuminate\Support\HtmlString((string) $svg);

@@ -55,7 +55,7 @@
         }
         .field textarea { min-height: 170px; resize: vertical; }
         .field input:focus, .field select:focus, .field textarea:focus {
-            outline: none; border-color: var(--navy); background: #fff; box-shadow: 0 0 0 4px rgba(26,58,92,.12);
+            outline: none; border-color: var(--navy); background: #fff; box-shadow: 0 0 0 4px rgba(194,97,15,.12);
         }
         .field.has-error input, .field.has-error select, .field.has-error textarea { border-color: #e31b23; }
         .field .error { color: #c81e25; font-size: 13px; margin-top: 6px; display: flex; gap: 6px; align-items: center; }

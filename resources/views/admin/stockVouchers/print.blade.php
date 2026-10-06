@@ -17,7 +17,7 @@
         .gov strong { font-size: 13px; }
         .gov em { color: #64748b; }
         .logo img { height: 46px; }
-        h1 { text-align: center; font-size: 20px; letter-spacing: .06em; text-transform: uppercase; color: #1a3a5c; margin: 26px 0 4px; }
+        h1 { text-align: center; font-size: 20px; letter-spacing: .06em; text-transform: uppercase; color: #c2610f; margin: 26px 0 4px; }
         .ref { text-align: center; color: #64748b; margin-bottom: 22px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
         .box { border: 1px solid #dfe5ec; border-radius: 8px; padding: 12px 14px; }
@@ -34,7 +34,7 @@
         .sign span { color: #64748b; font-size: 12px; }
         .foot { margin-top: 36px; font-size: 11px; color: #94a3b8; text-align: center; }
         .toolbar { text-align: center; margin: 18px 0 0; }
-        .toolbar button { font: inherit; font-weight: 600; background: #1a3a5c; color: #fff; border: 0; border-radius: 8px; padding: 10px 18px; cursor: pointer; }
+        .toolbar button { font: inherit; font-weight: 600; background: #c2610f; color: #fff; border: 0; border-radius: 8px; padding: 10px 18px; cursor: pointer; }
         @media print {
             body { background: #fff; }
             .sheet { margin: 0; box-shadow: none; width: auto; min-height: 0; padding: 0; }

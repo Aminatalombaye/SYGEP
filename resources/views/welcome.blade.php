@@ -117,10 +117,10 @@
 
         .block-icon-green,
         .block-icon-blue,
-        .block-icon-purple { background: #eef4f9; }
+        .block-icon-purple { background: #fdf3e7; }
         .block-icon-green i,
         .block-icon-blue i,
-        .block-icon-purple i { color: #1a3a5c; font-size: 28px; }
+        .block-icon-purple i { color: #c2610f; font-size: 28px; }
 
         .block-title {
             font-size: 19px;
@@ -225,7 +225,7 @@
         .feature-icon {
             width: 64px;
             height: 64px;
-            background: linear-gradient(135deg, #eef4f9 0%, #dbe7f1 100%);
+            background: linear-gradient(135deg, #fdf3e7 0%, #fbe3c4 100%);
             border-radius: 18px;
             display: flex;
             align-items: center;
@@ -236,12 +236,12 @@
 
         .feature-card:hover .feature-icon {
             transform: scale(1.08) rotate(-5deg);
-            background: linear-gradient(135deg, #dbe7f1 0%, #c1d5e6 100%);
+            background: linear-gradient(135deg, #fbe3c4 0%, #f6d9b4 100%);
         }
 
         .feature-icon i {
             font-size: 30px;
-            color: #1a3a5c;
+            color: #c2610f;
         }
 
         .feature-card h3 {
@@ -329,7 +329,7 @@
         }
 
         .preview-list li i {
-            color: #1a3a5c;
+            color: #c2610f;
             font-size: 22px;
             flex-shrink: 0;
         }

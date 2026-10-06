@@ -36,7 +36,7 @@
                     @endif
                 </td>
                 <td>
-                    <a href="{{ route('admin.etapes.create', ['infrastructure' => $infrastructure->id]) }}" class="btn btn-primary">
+                    <a href="{{ route('admin.etapes.create', ['infrastructure' => $infrastructure->id]) }}" class="btn btn-primary btn-add">
                         Ajouter étape d'exécution
                     </a>
 

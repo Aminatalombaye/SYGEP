@@ -17,7 +17,7 @@
             border-radius: 24px;
             overflow: hidden;
             background: #fff;
-            box-shadow: 0 30px 60px -30px rgba(26,58,92,.25);
+            box-shadow: 0 30px 60px -30px rgba(194,97,15,.25);
             min-height: 600px;
         }
 
@@ -67,7 +67,7 @@
         }
         .input-icon input:focus {
             outline: none; border-color: var(--navy); background: #fff;
-            box-shadow: 0 0 0 4px rgba(26,58,92,.12);
+            box-shadow: 0 0 0 4px rgba(194,97,15,.12);
         }
         .input-icon.has-toggle input { padding-right: 50px; }
         .toggle-password {
@@ -92,7 +92,7 @@
 
         .alert { border-radius: 14px; padding: 14px 16px; margin-bottom: 22px; display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
         .alert i { font-size: 18px; line-height: 1.2; }
-        .alert-info { background: var(--tint); color: var(--navy); border: 1px solid #d3e2ee; }
+        .alert-info { background: var(--tint); color: var(--navy); border: 1px solid #f6d9b4; }
         .alert-error { background: #fef2f2; color: #9b1c1c; border: 1px solid #fecaca; }
 
         .secure-note {

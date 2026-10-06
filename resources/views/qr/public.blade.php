@@ -7,7 +7,7 @@
         .qr-section { padding: 56px 0 80px; background: linear-gradient(180deg, #ffffff 0%, #f8fbfd 100%); }
         .qr-card {
             max-width: 520px; margin: 0 auto; background: #fff; border: 1px solid var(--line); border-radius: 24px;
-            padding: 36px 34px; box-shadow: 0 30px 60px -30px rgba(26,58,92,.25); text-align: center;
+            padding: 36px 34px; box-shadow: 0 30px 60px -30px rgba(194,97,15,.25); text-align: center;
         }
         .qr-badge {
             display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px;
